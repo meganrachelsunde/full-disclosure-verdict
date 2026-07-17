@@ -1,0 +1,617 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-fraunces);
+  --font-heading: var(--font-display);
+  --color-obsidian: var(--obsidian);
+  --color-charcoal: var(--charcoal);
+  --color-ivory: var(--ivory);
+  --color-smoke: var(--smoke);
+  --color-gold: var(--gold);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Evidence-environment palette. This product is a single dark
+   architectural surface — there is no light-mode counterpart. */
+:root,
+.dark {
+  --obsidian: #09090b;
+  --charcoal: #17161a;
+  --ivory: #f5f0e6;
+  --smoke: #9b9791;
+  --gold: #c8a968;
+
+  --background: var(--obsidian);
+  --foreground: var(--ivory);
+  --card: #1c1a1f;
+  --card-foreground: var(--ivory);
+  --popover: #1c1a1f;
+  --popover-foreground: var(--ivory);
+  --primary: var(--ivory);
+  --primary-foreground: var(--obsidian);
+  --secondary: #232127;
+  --secondary-foreground: var(--ivory);
+  --muted: #201f24;
+  --muted-foreground: var(--smoke);
+  --accent: #262029;
+  --accent-foreground: var(--ivory);
+  --destructive: #c9584a;
+  --border: rgba(245, 240, 230, 0.12);
+  --input: rgba(245, 240, 230, 0.16);
+  --ring: rgba(200, 169, 104, 0.55);
+  --chart-1: var(--gold);
+  --chart-2: var(--smoke);
+  --chart-3: #6f6b66;
+  --chart-4: #45424a;
+  --chart-5: #232127;
+  --radius: 0.85rem;
+  --sidebar: var(--charcoal);
+  --sidebar-foreground: var(--ivory);
+  --sidebar-primary: var(--ivory);
+  --sidebar-primary-foreground: var(--obsidian);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--ivory);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    position: relative;
+    /* A faint vignette and grain over the base color — restrained texture
+       for long-form content, not a visual event. The .bg-ambient blurred
+       shapes (behind the WebGL layer) add the warm light; this is just
+       edge darkening plus grain. */
+    background-image:
+      radial-gradient(
+        ellipse 140% 100% at 50% 35%,
+        transparent 55%,
+        rgba(0, 0, 0, 0.32) 100%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Ambient background — CSS fallback. Sits one layer behind the WebGL
+   scene (.webgl-background, z-index -1) so it's only what's visible if
+   WebGL is unavailable. Same reasoning either way: every glass surface
+   needs something with actual color and edges behind it to reveal
+   through its blur, not a flat tint. */
+.bg-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* The real background: a fixed, full-viewport, transparent WebGL canvas.
+   Strictly decorative — never intercepts clicks or keyboard focus, and
+   contains no readable content. */
+.webgl-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.webgl-background canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.bg-ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(110px);
+}
+
+.bg-ambient-blob-1 {
+  top: -12%;
+  left: -10%;
+  width: 46rem;
+  height: 46rem;
+  background: radial-gradient(
+    circle,
+    rgba(200, 169, 104, 0.14),
+    transparent 72%
+  );
+}
+
+.bg-ambient-blob-2 {
+  top: 8%;
+  right: -14%;
+  width: 40rem;
+  height: 40rem;
+  background: radial-gradient(
+    circle,
+    rgba(160, 150, 128, 0.1),
+    transparent 72%
+  );
+}
+
+.bg-ambient-blob-3 {
+  bottom: -18%;
+  left: 20%;
+  width: 50rem;
+  height: 50rem;
+  background: radial-gradient(
+    circle,
+    rgba(200, 169, 104, 0.09),
+    transparent 72%
+  );
+}
+
+.bg-ambient-blob-4 {
+  top: 42%;
+  left: 45%;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(
+    circle,
+    rgba(110, 100, 85, 0.1),
+    transparent 72%
+  );
+}
+
+/* Glass tiers -------------------------------------------------------- */
+
+@layer components {
+  /* Tier 1: evidence planes — hero cluster only. The most dimensional
+     surface: blur, refraction gradient, inner highlight, ambient shadow. */
+  .glass-plane {
+    position: relative;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(245, 240, 230, 0.14);
+    background: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.015) 55%,
+      rgba(255, 255, 255, 0.03)
+    );
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 40px 80px -30px rgba(0, 0, 0, 0.75),
+      0 0 42px -18px rgba(200, 169, 104, 0.14);
+  }
+
+  /* Tier 2: interface panels — flatter, content-bearing surfaces. More
+     transparent than before so the page-wide backdrop shows through. */
+  .glass-panel {
+    position: relative;
+    border-radius: 1rem;
+    border: 1px solid rgba(245, 240, 230, 0.1);
+    background: rgba(24, 22, 26, 0.56);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 24px 48px -28px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Tier 3: chrome — nav and footer. Genuinely translucent, with a strong
+     blur, so page content visibly passes behind it as the page scrolls —
+     the sticky nav is the one element always on screen during a scroll,
+     so it's where the see-through effect needs to actually read. */
+  .glass-chrome {
+    background: rgba(9, 9, 11, 0.5);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+
+  /* Scope / limits — deliberately flatter and more sober than the rest
+     of the page. No blur, no glow: the limitations are plain fact. */
+  .glass-flat {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(245, 240, 230, 0.12);
+    background: rgba(19, 18, 21, 0.88);
+  }
+}
+
+/* Any glass surface with a focused interactive child gets a subtle gold
+   border lift, on top of that child's own focus ring — reinforces that
+   something inside is active without relying on the ring alone. */
+.glass-panel:focus-within,
+.glass-plane:focus-within {
+  border-color: rgba(200, 169, 104, 0.32);
+}
+
+/* Exhibit tabs --------------------------------------------------------
+   The bespoke control form used everywhere a toggle, filter, or stepper
+   would otherwise be a generic rounded pill/segmented control. Shaped
+   like a file or index tab pulled from a case folder: flat bottom edge,
+   rounded top, the active tab raised and fused to the panel it opens,
+   inactive tabs sitting slightly lower and behind. Works for two options
+   or five — never reads as a binary switch. */
+
+.exhibit-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.exhibit-tab {
+  position: relative;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.65rem 1.1rem 0.6rem;
+  border-radius: 0.6rem 0.6rem 0 0;
+  border: 1px solid rgba(245, 240, 230, 0.1);
+  border-bottom: none;
+  background: rgba(19, 18, 21, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-geist-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  transform: translateY(5px);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.exhibit-tab:hover {
+  color: var(--ivory);
+  transform: translateY(2px);
+}
+
+.exhibit-tab:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.exhibit-tab[aria-pressed="true"] {
+  color: var(--ivory);
+  background: rgba(28, 26, 31, 0.82);
+  border-color: rgba(200, 169, 104, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(200, 169, 104, 0.5),
+    0 -14px 28px -18px rgba(0, 0, 0, 0.7);
+  transform: translateY(0);
+}
+
+/* The panel a tab set controls — flush seam against the active tab. */
+.exhibit-panel {
+  border-radius: 0 0.85rem 0.85rem 0.85rem;
+}
+
+/* Vertical sibling of .exhibit-tab, for a stepper that sits beside (not
+   above) the panel it controls — the active step juts toward the panel,
+   inactive steps recede left, instead of a checklist of equal cards. */
+.ledger-tab {
+  position: relative;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  border: 1px solid rgba(245, 240, 230, 0.1);
+  border-left: none;
+  background: rgba(19, 18, 21, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--smoke);
+  transform: translateX(-10px);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.ledger-tab:hover {
+  transform: translateX(-4px);
+}
+
+.ledger-tab:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.ledger-tab[aria-pressed="true"] {
+  background: rgba(28, 26, 31, 0.82);
+  border-color: rgba(200, 169, 104, 0.4);
+  box-shadow:
+    inset 1px 0 0 rgba(200, 169, 104, 0.5),
+    16px 0 28px -20px rgba(0, 0, 0, 0.7);
+  transform: translateX(0);
+}
+
+/* Hero evidence-plane composition ------------------------------------ */
+
+.evidence-stage {
+  position: relative;
+  perspective: 1800px;
+  /* A definite `height` (not `min-height`) is required here: percentage
+     heights on descendants only resolve against an ancestor's specified
+     height. With only min-height set, .evidence-cluster's height:100%
+     resolved to `auto`, and since its children are all absolutely
+     positioned (contributing nothing to auto height), the cluster
+     collapsed to ~0px — crushing every plane's percentage-based
+     vertical offset to nothing. */
+  height: 36rem;
+}
+
+.evidence-cluster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --depth-scale: 1;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tiltX, 0deg)) rotateY(var(--tiltY, 0deg));
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+  will-change: transform;
+}
+
+.evidence-plane {
+  position: absolute;
+  left: calc(50% + var(--px));
+  top: calc(50% + var(--py));
+  width: 15rem;
+  padding: 1.1rem 1.25rem;
+  z-index: var(--pzindex, 1);
+  opacity: var(--popacity, 1);
+  /* Button reset: .evidence-plane is a real <button>, not a decorative
+     div, so it can receive click/tap and keyboard focus. */
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  /* Runtime JS only ever sets --tiltX/--tiltY (on the cluster) and
+     --scrollY (per plane) as custom properties — it never assigns
+     `transform` directly, so the base positioning/depth transform
+     below is never clobbered at runtime. */
+  transform: translate(-50%, -50%) translateZ(calc(var(--pz) * var(--depth-scale)))
+    rotate(calc(var(--protate) * var(--depth-scale))) scale(var(--pscale, 1))
+    translateY(var(--scrollY, 0px));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 calc(20px + var(--pz) * 0.35) calc(46px + var(--pz) * 0.5) -20px
+      rgba(0, 0, 0, 0.78),
+    0 0 42px -18px rgba(200, 169, 104, 0.14);
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1),
+    opacity 0.35s ease;
+}
+
+.evidence-plane:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* Hover, keyboard focus, or a pinned (clicked) plane rises, sharpens,
+   and comes fully into focus while its neighbors recede — driven purely
+   by CSS so it works identically for mouse, keyboard, and touch (via the
+   pinned state, which persists after tap). */
+.evidence-plane:hover,
+.evidence-plane:focus-visible,
+.evidence-plane[data-pinned="true"] {
+  opacity: 1;
+  z-index: 60;
+  transform: translate(-50%, -50%) translateZ(150px) rotate(0deg) scale(1.14)
+    translateY(var(--scrollY, 0px));
+}
+
+.evidence-cluster:has(
+    .evidence-plane:hover,
+    .evidence-plane:focus-visible,
+    .evidence-plane[data-pinned="true"]
+  )
+  .evidence-plane:not(:hover):not(:focus-visible):not([data-pinned="true"]) {
+  opacity: 0.4;
+  transform: translate(-50%, -50%)
+    translateZ(calc(var(--pz) * var(--depth-scale) * 0.5))
+    rotate(calc(var(--protate) * var(--depth-scale)))
+    scale(calc(var(--pscale, 1) * 0.92)) translateY(var(--scrollY, 0px));
+}
+
+/* Status-filter chips in the hero: matching planes get a gold rim,
+   non-matching planes dim — independent of hover/pin, so it composes
+   cleanly with either state. */
+.evidence-plane[data-status-match="true"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 1.5px rgba(200, 169, 104, 0.55),
+    0 calc(20px + var(--pz) * 0.35) calc(46px + var(--pz) * 0.5) -20px
+      rgba(0, 0, 0, 0.78);
+}
+
+.evidence-plane[data-status-dim="true"] {
+  opacity: 0.3;
+}
+
+.evidence-plane-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--ivory);
+}
+
+.evidence-plane-sub {
+  display: block;
+  margin-top: 0.4rem;
+  font-family: var(--font-geist-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+
+/* Tablet: keep the spatial cascade, but soften the depth. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .evidence-stage {
+    height: 26rem;
+  }
+  .evidence-cluster {
+    --depth-scale: 0.5;
+  }
+  .evidence-plane {
+    width: 11.5rem;
+  }
+}
+
+/* Mobile: static staggered stack, no tilt, no parallax, no perspective. */
+@media (max-width: 639px) {
+  .evidence-stage {
+    perspective: none;
+    height: auto;
+  }
+  .evidence-cluster {
+    transform: none !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .evidence-plane {
+    position: static;
+    width: 100%;
+    opacity: 1;
+    transform: none !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.09),
+      0 24px 48px -24px rgba(0, 0, 0, 0.7),
+      0 0 42px -18px rgba(200, 169, 104, 0.14);
+  }
+}
+
+/* Selection detail panels (hero plane detail, demonstration source trace) */
+
+.evidence-detail {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.3s ease;
+}
+
+.evidence-detail-open {
+  max-height: 40rem;
+  opacity: 1;
+}
+
+/* Record-reconstruction stage transition -------------------------------- */
+
+@keyframes stage-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stage-enter {
+  animation: stage-enter 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Scroll reveal -------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Motion & user preference guards -------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .evidence-cluster {
+    transform: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
+  .evidence-plane {
+    transform: translate(-50%, -50%) translateZ(0) rotate(0deg) !important;
+  }
+}

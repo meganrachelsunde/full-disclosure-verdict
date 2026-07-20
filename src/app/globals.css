@@ -222,6 +222,34 @@
   filter: sepia(0.32) saturate(0.75) brightness(0.85) contrast(1.2);
 }
 
+/* Mobile-only: the desktop scrim above is a left-to-right gradient tuned
+   for a layout where .hero-glass-panel occupies ~40% of the hero's
+   width, leaving the right 60% clearly visible. Below 768px the same
+   panel occupies ~88% of the width (it just wraps to more lines), so
+   that gradient's near-solid zone covers almost the entire viewport and
+   the book reads as an empty dark hero even though the video is
+   genuinely playing underneath. This does not touch any rule above —
+   it only overrides the background-position/shape for narrow viewports
+   to match where the panel actually sits (centered, not left-aligned),
+   and adds a CSS background-image of the poster as a guaranteed base
+   layer independent of whether the <video> itself ever paints. */
+@media (max-width: 767px) {
+  .hero-media-background {
+    background-image: url("/media/fdv-hero-poster.jpg");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero-media-background::after {
+    background: radial-gradient(
+      ellipse 75% 65% at 50% 42%,
+      rgba(6, 8, 9, 0.88) 0%,
+      rgba(6, 8, 9, 0.7) 55%,
+      rgba(6, 8, 9, 0.38) 100%
+    );
+  }
+}
+
 /* Ken Burns hero background: a still image, held at a constant 1.15x
    scale (so it's always oversized relative to its frame) while only the
    pan animates — the overscan is what guarantees the slow drift never

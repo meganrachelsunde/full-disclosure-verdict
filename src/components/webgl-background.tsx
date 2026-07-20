@@ -20,12 +20,13 @@ function supportsWebGL() {
   }
 }
 
-// Client-only, decorative, fixed background. Rendered as a sibling behind
-// page content — never blocks the initial HTML paint of the headline or
-// any other content, since it only starts loading after mount and sits
-// in a position:fixed layer outside normal document flow. If WebGL is
-// unavailable, this renders nothing and the CSS .bg-ambient layer (see
-// globals.css) is the visible fallback.
+// Client-only, decorative background scoped to whichever positioned
+// ancestor renders it (the hero section) — never blocks the initial HTML
+// paint of the headline or any other content, since it only starts
+// loading after mount and sits in an absolutely positioned layer that
+// fills and is clipped to that ancestor. If WebGL is unavailable, this
+// renders nothing and the CSS .bg-ambient layer (see globals.css) is the
+// visible fallback.
 export function WebglBackground() {
   const [ready, setReady] = useState(false);
   const [supported, setSupported] = useState(false);
@@ -59,7 +60,7 @@ export function WebglBackground() {
   if (!ready || !supported) return null;
 
   return (
-    <div aria-hidden="true" className="webgl-background">
+    <div aria-hidden="true" className="hero-webgl-background">
       <EvidenceScene reduceMotion={reduceMotion} simplified={simplified} />
     </div>
   );

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
-import { WebglBackground } from "@/components/webgl-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -41,7 +40,6 @@ export default function RootLayout({
           <span className="bg-ambient-blob bg-ambient-blob-3" />
           <span className="bg-ambient-blob bg-ambient-blob-4" />
         </div>
-        <WebglBackground />
         {children}
       </body>
     </html>

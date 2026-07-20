@@ -9,14 +9,6 @@ type Plane = {
   id: string;
   label: string;
   sub: string;
-  x: number;
-  y: number;
-  z: number;
-  rotate: number;
-  scale: number;
-  opacity: number;
-  zIndex: number;
-  scrollRate: number;
   detail: {
     record: string;
     source: string;
@@ -39,85 +31,27 @@ const STATUS_ORDER: Status[] = [
   "unresolved",
 ];
 
-// Arranged as a single ascending staircase — bottom-left (raw intake) to
-// top-right (verified, source-linked fact) — rather than a tilted cascade.
-// No rotation on any plane: elevation comes from position, translateZ,
-// scale, and opacity, not from angling the cards. Contradictions and
-// omissions sit on the middle steps and go no higher — they hold at a
-// plateau rather than reaching the summit, since they haven't been
-// resolved into a verified fact.
+// One quiet vertical column, most-resolved finding first — no diagonal
+// staircase, no depth stacking. Order still carries the same reasoning
+// as before (raw intake earns its way up to a verified fact); it's just
+// expressed as a plain top-to-bottom list now.
 const PLANES: Plane[] = [
   {
-    id: "source-records",
-    label: "Source Records",
-    sub: "28 documents",
-    x: -26,
-    y: 36,
-    z: 0,
-    rotate: 0,
-    scale: 0.86,
-    opacity: 0.76,
-    zIndex: 10,
-    scrollRate: 4,
+    id: "verified-facts",
+    label: "Verified Facts",
+    sub: "Source-linked",
     detail: {
       record:
-        "28 source documents logged on intake — origin and page count recorded for each.",
-      source: "Docs 001–028, full production",
-      chronologyPosition: "Precedes chronology — raw intake",
+        "Initial exam and radiograph findings, cross-referenced across two documents.",
+      source: "Docs 003–004, cross-referenced",
+      chronologyPosition: "March 2021 — first entry",
       status: "supported",
-    },
-  },
-  {
-    id: "contradictions",
-    label: "Contradictions",
-    sub: "2 unresolved",
-    x: -13,
-    y: 16,
-    z: 28,
-    rotate: 0,
-    scale: 0.92,
-    opacity: 0.83,
-    zIndex: 20,
-    scrollRate: 7,
-    detail: {
-      record:
-        "A restorative entry lists tooth #19; the prior chart entry lists tooth #18.",
-      source: "Doc 007, p.3 vs. Doc 003, p.2",
-      chronologyPosition: "January 2022",
-      status: "contradicted",
-    },
-  },
-  {
-    id: "omissions",
-    label: "Omissions",
-    sub: "1 flagged gap",
-    x: 0,
-    y: -4,
-    z: 56,
-    rotate: 0,
-    scale: 0.98,
-    opacity: 0.9,
-    zIndex: 32,
-    scrollRate: 9,
-    detail: {
-      record: "No record of the scheduled six-month recall visit.",
-      source: "Expected — not found in production",
-      chronologyPosition: "September 2021 (expected)",
-      status: "incomplete",
     },
   },
   {
     id: "chronology",
     label: "Chronology",
     sub: "Reconstructed timeline",
-    x: 13,
-    y: -24,
-    z: 80,
-    rotate: 0,
-    scale: 1.05,
-    opacity: 0.97,
-    zIndex: 45,
-    scrollRate: 12,
     detail: {
       record:
         "Every entry sequenced into a single timeline, each one linked back to its source page.",
@@ -127,22 +61,37 @@ const PLANES: Plane[] = [
     },
   },
   {
-    id: "verified-facts",
-    label: "Verified Facts",
-    sub: "Source-linked",
-    x: 26,
-    y: -42,
-    z: 100,
-    rotate: 0,
-    scale: 1.12,
-    opacity: 1,
-    zIndex: 58,
-    scrollRate: 15,
+    id: "omissions",
+    label: "Omissions",
+    sub: "1 flagged gap",
+    detail: {
+      record: "No record of the scheduled six-month recall visit.",
+      source: "Expected — not found in production",
+      chronologyPosition: "September 2021 (expected)",
+      status: "incomplete",
+    },
+  },
+  {
+    id: "contradictions",
+    label: "Contradictions",
+    sub: "2 unresolved",
     detail: {
       record:
-        "Initial exam and radiograph findings, cross-referenced across two documents.",
-      source: "Docs 003–004, cross-referenced",
-      chronologyPosition: "March 2021 — first entry",
+        "A restorative entry lists tooth #19; the prior chart entry lists tooth #18.",
+      source: "Doc 007, p.3 vs. Doc 003, p.2",
+      chronologyPosition: "January 2022",
+      status: "contradicted",
+    },
+  },
+  {
+    id: "source-records",
+    label: "Source Records",
+    sub: "28 documents",
+    detail: {
+      record:
+        "28 source documents logged on intake — origin and page count recorded for each.",
+      source: "Docs 001–028, full production",
+      chronologyPosition: "Precedes chronology — raw intake",
       status: "supported",
     },
   },
@@ -150,8 +99,6 @@ const PLANES: Plane[] = [
 
 export function EvidencePlanes() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const clusterRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const planeRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [pinnedId, setPinnedId] = useState<string | null>(null);
@@ -169,7 +116,7 @@ export function EvidencePlanes() {
     planeRefs.current[0]?.focus();
   }, []);
 
-  // Close on Escape or on a click/tap outside the stage and detail panel.
+  // Close on Escape or on a click/tap outside the column and detail panel.
   useEffect(() => {
     if (!pinnedId) return;
 
@@ -193,9 +140,9 @@ export function EvidencePlanes() {
     };
   }, [pinnedId]);
 
-  // The stage is tall enough that the detail panel can open below the
-  // visible viewport, making it look like nothing happened. Bring it into
-  // view whenever a plane gets pinned.
+  // The column can open a detail panel below the visible viewport,
+  // making it look like nothing happened. Bring it into view whenever a
+  // plane gets pinned.
   useEffect(() => {
     if (!pinnedId) return;
     const reduceMotion = window.matchMedia(
@@ -206,71 +153,6 @@ export function EvidencePlanes() {
       block: "nearest",
     });
   }, [pinnedId]);
-
-  // Cursor tilt (desktop, fine pointer only) and scroll parallax. Only ever
-  // sets --tiltX/--tiltY (cluster) and --scrollY (per plane) as custom
-  // properties — never touches `transform` directly, so it can't clobber
-  // the plane-positioning transform declared in CSS.
-  useEffect(() => {
-    const stage = stageRef.current;
-    const cluster = clusterRef.current;
-    if (!stage || !cluster) return;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    const isDesktop = window.matchMedia(
-      "(min-width: 1024px) and (pointer: fine)"
-    ).matches;
-    if (reduceMotion || !isDesktop) return;
-
-    let scrollFrame = 0;
-
-    function handlePointerMove(e: PointerEvent) {
-      const rect = stage!.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      cluster!.style.setProperty("--tiltX", `${(py * -6).toFixed(2)}deg`);
-      cluster!.style.setProperty("--tiltY", `${(px * 8).toFixed(2)}deg`);
-    }
-
-    function handlePointerLeave() {
-      cluster!.style.setProperty("--tiltX", "0deg");
-      cluster!.style.setProperty("--tiltY", "0deg");
-    }
-
-    function handleScroll() {
-      if (scrollFrame) return;
-      scrollFrame = requestAnimationFrame(() => {
-        scrollFrame = 0;
-        const rect = stage!.getBoundingClientRect();
-        const progress = Math.min(
-          Math.max(1 - rect.top / window.innerHeight, 0),
-          1.4
-        );
-        planeRefs.current.forEach((el, i) => {
-          if (!el) return;
-          const rate = PLANES[i].scrollRate;
-          el.style.setProperty(
-            "--scrollY",
-            `${(progress * rate).toFixed(1)}px`
-          );
-        });
-      });
-    }
-
-    stage.addEventListener("pointermove", handlePointerMove);
-    stage.addEventListener("pointerleave", handlePointerLeave);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => {
-      stage.removeEventListener("pointermove", handlePointerMove);
-      stage.removeEventListener("pointerleave", handlePointerLeave);
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollFrame) cancelAnimationFrame(scrollFrame);
-    };
-  }, []);
 
   return (
     <div ref={containerRef} className="flex flex-col gap-5">
@@ -312,12 +194,11 @@ export function EvidencePlanes() {
       </div>
 
       <div
-        ref={stageRef}
         className="evidence-stage"
         role="group"
         aria-label="Evidence planes — five record categories, activate one to view its detail"
       >
-        <div ref={clusterRef} className="evidence-cluster">
+        <div className="evidence-cluster">
           {PLANES.map((plane, i) => {
             const pinned = pinnedId === plane.id;
             const statusMatch =
@@ -331,24 +212,13 @@ export function EvidencePlanes() {
                 ref={(el) => {
                   planeRefs.current[i] = el;
                 }}
-                className="glass-plane evidence-plane"
+                className="evidence-plane"
                 data-pinned={pinned ? "true" : undefined}
                 data-status-match={statusMatch ? "true" : undefined}
                 data-status-dim={statusDim ? "true" : undefined}
                 aria-pressed={pinned}
                 aria-label={`${plane.label} — ${plane.sub}. Status: ${STATUS_LABEL[plane.detail.status]}. View detail.`}
                 onClick={() => togglePlane(plane.id)}
-                style={
-                  {
-                    "--px": `${plane.x}%`,
-                    "--py": `${plane.y}%`,
-                    "--pz": `${plane.z}px`,
-                    "--protate": `${plane.rotate}deg`,
-                    "--pscale": plane.scale,
-                    "--popacity": plane.opacity,
-                    "--pzindex": plane.zIndex,
-                  } as React.CSSProperties
-                }
               >
                 <span className="evidence-plane-label">{plane.label}</span>
                 <span className="evidence-plane-sub">{plane.sub}</span>

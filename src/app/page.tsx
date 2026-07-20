@@ -7,9 +7,16 @@ import {
   Users,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { EvidencePlanes } from "@/components/evidence-planes";
+import { HeroBookVideo } from "@/components/hero-book-video";
 import { Reveal } from "@/components/reveal";
-import { RecordReconstruction } from "@/components/record-reconstruction";
+import { RecordInvestigation } from "@/components/record-investigation";
 import { DemonstrationExplorer } from "@/components/demonstration-explorer";
 import { DifferentiationToggle } from "@/components/differentiation-toggle";
 import { IntakeForm } from "@/components/intake-form";
@@ -57,11 +64,31 @@ const capabilities = [
 ];
 
 const accountabilityTags = [
-  "Source",
-  "Chronology",
-  "Reasoning path",
-  "Confidence level",
-  "Unresolved conflicts",
+  {
+    label: "Source",
+    description:
+      "Every finding is traceable back to the specific document and page it came from — nothing is asserted without a citation into the record.",
+  },
+  {
+    label: "Chronology",
+    description:
+      "Findings are placed in sequence, so what happened before and after a given entry is never lost or reordered to fit a narrative.",
+  },
+  {
+    label: "Reasoning path",
+    description:
+      "The steps from source document to conclusion are preserved and visible, not collapsed into an unexplained result.",
+  },
+  {
+    label: "Confidence level",
+    description:
+      "Each finding is marked by how well the record actually supports it — supported, contradicted, incomplete, or unresolved — never flattened into a single verdict.",
+  },
+  {
+    label: "Unresolved conflicts",
+    description:
+      "Contradictions between sources are preserved side by side for review, not silently resolved in either direction.",
+  },
 ];
 
 const outOfScope = ["Provide legal advice", "Diagnose patients"];
@@ -98,6 +125,12 @@ export default function Home() {
                 Process
               </a>
               <a
+                href="#accountability"
+                className="transition-colors hover:text-ivory"
+              >
+                Accountability
+              </a>
+              <a
                 href="#capabilities"
                 className="transition-colors hover:text-ivory"
               >
@@ -132,9 +165,10 @@ export default function Home() {
       <main id="main-content" className="flex flex-col">
         {/* Hero */}
         <section id="hero" className="relative overflow-hidden border-b border-white/[0.06]">
+          <HeroBookVideo />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_20%,rgba(200,169,104,0.08),transparent)]" />
-          <div className="relative mx-auto grid max-w-6xl gap-16 px-6 py-20 sm:py-28 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8">
-            <div>
+          <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-28">
+            <div className="hero-glass-panel max-w-xl p-8 sm:p-10 lg:p-12">
               <Eyebrow>Record-integrity intelligence</Eyebrow>
               <h1 className="mt-6 max-w-xl font-display text-4xl leading-[1.15] tracking-tight text-ivory sm:text-5xl">
                 The conclusion is only as defensible as the record that
@@ -156,26 +190,72 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            <EvidencePlanes />
           </div>
         </section>
 
         {/* Process */}
         <section id="process" className="border-b border-white/[0.06]">
-          <div className="mx-auto max-w-[88rem] px-6 py-20 sm:py-24">
+          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
             <Reveal className="max-w-2xl">
-              <Eyebrow>How it works</Eyebrow>
+              <Eyebrow>Interactive record</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                Reconstruct first. Interpret second.
+                A record can look complete and still fail at the point that
+                matters.
               </h2>
               <p className="mt-4 text-smoke">
-                Separate records retain their source, sequence, conflict, and
-                uncertainty. Legal or expert judgment enters only after the
-                factual foundation can be inspected.
+                Inspect a synthetic matter. Every interaction reveals what
+                the record supports, what conflicts, and what still cannot
+                be concluded.
               </p>
             </Reveal>
             <Reveal className="mt-12">
-              <RecordReconstruction />
+              <RecordInvestigation />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Accountability */}
+        <section id="accountability" className="border-b border-white/[0.06]">
+          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+            <Reveal className="max-w-2xl">
+              <Eyebrow>Accountability</Eyebrow>
+              <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight text-ivory sm:text-3xl">
+                Most systems organize the record. Full Disclosure Verdict
+                tests the conclusion against it.
+              </h2>
+              <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
+                <p>
+                  It does not stop at collection, chronology, or summary.
+                  Each material finding is examined against its source,
+                  sequence, conflicts, omissions, and inferential
+                  steps—with the reasoning preserved beside the result.
+                </p>
+                <p className="text-ivory">
+                  Organization improves access. Discernment determines what
+                  the record can support.
+                </p>
+              </div>
+              <Accordion multiple className="mt-8 border-t border-white/[0.08]">
+                {accountabilityTags.map((tag) => (
+                  <AccordionItem
+                    key={tag.label}
+                    value={tag.label}
+                    className="border-white/[0.08]"
+                  >
+                    <AccordionTrigger className="font-mono text-xs uppercase tracking-wider text-smoke hover:text-ivory">
+                      {tag.label}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm leading-6 text-smoke">
+                      {tag.description}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+              <p className="mt-12 border-l-2 border-gold/60 pl-6 font-display text-2xl leading-snug text-ivory">
+                Full Disclosure Verdict does not replace legal expertise. It
+                preserves the evidentiary distinctions legal expertise
+                depends on.
+              </p>
             </Reveal>
           </div>
         </section>
@@ -300,7 +380,7 @@ export default function Home() {
                 Fictional demonstration — no patient information
               </Badge>
               <h2 className="font-display text-3xl tracking-tight text-ivory">
-                Illustrative chronology
+                Illustrative demonstration
               </h2>
               <p className="mt-4 text-smoke">
                 Every name, date, and entry below is fabricated for
@@ -309,8 +389,25 @@ export default function Home() {
               </p>
             </Reveal>
 
-            <Reveal className="mt-10">
-              <DemonstrationExplorer />
+            <Reveal className="mt-14">
+              <div className="glass-panel p-6 sm:p-8">
+                <EvidencePlanes />
+              </div>
+            </Reveal>
+
+            <div className="my-14 border-t border-white/[0.06]" aria-hidden="true" />
+
+            <Reveal>
+              <h3 className="font-display text-xl tracking-tight text-ivory">
+                Chronology table
+              </h3>
+              <p className="mt-2 max-w-2xl text-sm text-smoke">
+                The same kind of record, laid out as a filterable,
+                source-linked timeline.
+              </p>
+              <div className="mt-6">
+                <DemonstrationExplorer />
+              </div>
             </Reveal>
           </div>
         </section>
@@ -443,47 +540,6 @@ export default function Home() {
 
             <Reveal className="mt-10">
               <IntakeForm />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* Accountability */}
-        <section className="border-b border-white/[0.06]">
-          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-            <Reveal className="max-w-2xl">
-              <Eyebrow>Accountability</Eyebrow>
-              <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight text-ivory sm:text-3xl">
-                Most systems organize the record. Full Disclosure Verdict
-                tests the conclusion against it.
-              </h2>
-              <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
-                <p>
-                  It does not stop at collection, chronology, or summary.
-                  Each material finding is examined against its source,
-                  sequence, conflicts, omissions, and inferential
-                  steps—with the reasoning preserved beside the result.
-                </p>
-                <p className="text-ivory">
-                  Organization improves access. Discernment determines what
-                  the record can support.
-                </p>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {accountabilityTags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="border-white/15 font-mono text-[0.65rem] uppercase tracking-wider text-smoke"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <p className="mt-12 border-l-2 border-gold/60 pl-6 font-display text-2xl leading-snug text-ivory">
-                Full Disclosure Verdict does not replace legal expertise. It
-                preserves the evidentiary distinctions legal expertise
-                depends on.
-              </p>
             </Reveal>
           </div>
         </section>

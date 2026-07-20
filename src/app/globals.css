@@ -138,21 +138,162 @@
   pointer-events: none;
 }
 
-/* The real background: a fixed, full-viewport, transparent WebGL canvas.
-   Strictly decorative — never intercepts clicks or keyboard focus, and
-   contains no readable content. */
-.webgl-background {
-  position: fixed;
+/* The hero's procedural WebGL layer. Not currently mounted in the hero
+   (see page.tsx / hero-book-video.tsx) — the hero background is real
+   filmed footage now, not generated geometry — but the component and
+   these rules are preserved as-is rather than deleted. */
+.hero-webgl-background {
+  position: absolute;
   inset: 0;
-  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Softens the canvas's own hard rectangular boundary into the black
+     page background, rather than letting the book read as a bright
+     rectangular block sitting behind the text. */
+  mask-image: radial-gradient(
+    ellipse 72% 76% at 50% 46%,
+    black 55%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 76% at 50% 46%,
+    black 55%,
+    transparent 100%
+  );
+}
+
+.hero-webgl-background canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* The hero's real background: filmed footage of a physical book, one
+   page turning slowly. Absolutely positioned within — and clipped to —
+   the hero section only (see page.tsx). Rendered as the hero's first
+   child so it paints behind the headline and copy without needing
+   z-index. Strictly decorative — never intercepts clicks or keyboard
+   focus, and contains no readable content. The mask feathers the
+   video's own rectangular edges into the black page background instead
+   of letting them read as a hard-edged box behind the text. */
+.hero-media-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(
+    ellipse 70% 74% at 50% 46%,
+    black 45%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 74% at 50% 46%,
+    black 45%,
+    transparent 100%
+  );
+}
+
+/* A dark, warm-toned scrim over the footage itself — pulls it toward
+   ivory/smoke/charcoal/gold and keeps it dark enough that the headline
+   and copy painted above it stay sharply readable. */
+.hero-media-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Horizontal now, not vertical — near-solid on the left where the
+     glass panel/text sits, fading through the right third so the book
+     itself is visible there instead of being scrimmed out evenly. */
+  background: linear-gradient(
+    90deg,
+    rgba(6, 8, 9, 0.92) 0%,
+    rgba(6, 8, 9, 0.88) 60%,
+    rgba(6, 8, 9, 0.25) 100%
+  );
+}
+
+.hero-media-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+  filter: sepia(0.32) saturate(0.75) brightness(0.85) contrast(1.2);
+}
+
+/* Ken Burns hero background: a still image, held at a constant 1.15x
+   scale (so it's always oversized relative to its frame) while only the
+   pan animates — the overscan is what guarantees the slow drift never
+   exposes an edge. Pure CSS; no JS drives the motion. */
+.hero-kenburns-frame {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
 
-.webgl-background canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
+.hero-kenburns-image {
+  animation: hero-kenburns 28s ease-in-out infinite alternate;
+}
+
+@keyframes hero-kenburns {
+  from {
+    transform: scale(1.15) translate(-2%, -1.5%);
+  }
+  to {
+    transform: scale(1.15) translate(2%, 1.5%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns-image {
+    animation: none;
+    transform: scale(1.15);
+  }
+}
+
+/* The hero's own glass surface. Sits directly on a near-black backdrop
+   (the book-video layer is nearly imperceptible until its source asset
+   exists), so unlike .glass-plane it can't rely on a busy background
+   showing through its blur to read as elevated. The card's own fill,
+   border, and inset highlights have real contrast, and — since a
+   box-shadow of black-on-black is invisible — a separate blurred glow
+   layer behind it (::before) is what actually reads as "lit and raised"
+   against flat black. */
+.hero-glass-panel {
+  position: relative;
+  z-index: 1;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(226, 198, 140, 0.4);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 250, 240, 0.16),
+    rgba(255, 250, 240, 0.04) 55%,
+    rgba(0, 0, 0, 0.08)
+  );
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 50px 90px -20px rgba(0, 0, 0, 0.9);
+}
+
+.hero-glass-panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -3rem;
+  border-radius: 2.25rem;
+  background: radial-gradient(
+    ellipse at 30% 20%,
+    rgba(226, 198, 140, 0.32),
+    rgba(226, 198, 140, 0.12) 45%,
+    transparent 72%
+  );
+  filter: blur(38px);
+  pointer-events: none;
 }
 
 .bg-ambient-blob {
@@ -383,40 +524,33 @@
   transform: translateX(0);
 }
 
-/* Hero evidence-plane composition ------------------------------------ */
+/* Hero evidence-plane composition ------------------------------------
+   One quiet vertical column: identical left edge and width for every
+   card, consistent spacing, no diagonal offset or depth stacking, and
+   no independent floating/tilt/parallax motion — deliberately plain at
+   every breakpoint so it never competes with the headline. */
 
 .evidence-stage {
   position: relative;
-  perspective: 1800px;
-  /* A definite `height` (not `min-height`) is required here: percentage
-     heights on descendants only resolve against an ancestor's specified
-     height. With only min-height set, .evidence-cluster's height:100%
-     resolved to `auto`, and since its children are all absolutely
-     positioned (contributing nothing to auto height), the cluster
-     collapsed to ~0px — crushing every plane's percentage-based
-     vertical offset to nothing. */
-  height: 36rem;
 }
 
 .evidence-cluster {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  --depth-scale: 1;
-  transform-style: preserve-3d;
-  transform: rotateX(var(--tiltX, 0deg)) rotateY(var(--tiltY, 0deg));
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
-  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .evidence-plane {
-  position: absolute;
-  left: calc(50% + var(--px));
-  top: calc(50% + var(--py));
-  width: 15rem;
-  padding: 1.1rem 1.25rem;
-  z-index: var(--pzindex, 1);
-  opacity: var(--popacity, 1);
+  position: relative;
+  width: 100%;
+  padding: 0.8rem 1.1rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(245, 240, 230, 0.06);
+  background: rgba(12, 11, 13, 0.68);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  opacity: 1;
   /* Button reset: .evidence-plane is a real <button>, not a decorative
      div, so it can receive click/tap and keyboard focus. */
   appearance: none;
@@ -424,122 +558,62 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
-  /* Runtime JS only ever sets --tiltX/--tiltY (on the cluster) and
-     --scrollY (per plane) as custom properties — it never assigns
-     `transform` directly, so the base positioning/depth transform
-     below is never clobbered at runtime. */
-  transform: translate(-50%, -50%) translateZ(calc(var(--pz) * var(--depth-scale)))
-    rotate(calc(var(--protate) * var(--depth-scale))) scale(var(--pscale, 1))
-    translateY(var(--scrollY, 0px));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 calc(20px + var(--pz) * 0.35) calc(46px + var(--pz) * 0.5) -20px
-      rgba(0, 0, 0, 0.78),
-    0 0 42px -18px rgba(200, 169, 104, 0.14);
   transition:
-    transform 0.5s cubic-bezier(0.2, 0.7, 0.3, 1),
-    opacity 0.35s ease;
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .evidence-plane:focus-visible {
   outline: 2px solid var(--gold);
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
-/* Hover, keyboard focus, or a pinned (clicked) plane rises, sharpens,
-   and comes fully into focus while its neighbors recede — driven purely
-   by CSS so it works identically for mouse, keyboard, and touch (via the
-   pinned state, which persists after tap). */
+/* Hover, keyboard focus, or a pinned (clicked) card gets a faint gold
+   rim and a touch more surface density — no movement, no scale, no
+   z-index change, so the column stays level and static throughout. */
 .evidence-plane:hover,
 .evidence-plane:focus-visible,
 .evidence-plane[data-pinned="true"] {
-  opacity: 1;
-  z-index: 60;
-  transform: translate(-50%, -50%) translateZ(150px) rotate(0deg) scale(1.14)
-    translateY(var(--scrollY, 0px));
+  border-color: rgba(200, 169, 104, 0.24);
+  background: rgba(18, 16, 19, 0.78);
 }
 
-.evidence-cluster:has(
-    .evidence-plane:hover,
-    .evidence-plane:focus-visible,
-    .evidence-plane[data-pinned="true"]
-  )
-  .evidence-plane:not(:hover):not(:focus-visible):not([data-pinned="true"]) {
-  opacity: 0.4;
-  transform: translate(-50%, -50%)
-    translateZ(calc(var(--pz) * var(--depth-scale) * 0.5))
-    rotate(calc(var(--protate) * var(--depth-scale)))
-    scale(calc(var(--pscale, 1) * 0.92)) translateY(var(--scrollY, 0px));
+/* When one card is pinned, the rest dim slightly — opacity only, no
+   transform — to keep the selection legible without any floating or
+   diagonal motion. */
+.evidence-cluster:has(.evidence-plane[data-pinned="true"])
+  .evidence-plane:not([data-pinned="true"]) {
+  opacity: 0.6;
 }
 
-/* Status-filter chips in the hero: matching planes get a gold rim,
-   non-matching planes dim — independent of hover/pin, so it composes
-   cleanly with either state. */
+/* Status-filter chips: matching cards get a faint gold rim, non-matching
+   cards dim — independent of hover/pin, so it composes cleanly with
+   either state. */
 .evidence-plane[data-status-match="true"] {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 0 0 1.5px rgba(200, 169, 104, 0.55),
-    0 calc(20px + var(--pz) * 0.35) calc(46px + var(--pz) * 0.5) -20px
-      rgba(0, 0, 0, 0.78);
+  border-color: rgba(200, 169, 104, 0.4);
 }
 
 .evidence-plane[data-status-dim="true"] {
-  opacity: 0.3;
+  opacity: 0.45;
 }
 
 .evidence-plane-label {
   display: block;
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   line-height: 1.25;
   color: var(--ivory);
 }
 
 .evidence-plane-sub {
   display: block;
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
   font-family: var(--font-geist-mono);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--smoke);
-}
-
-/* Tablet: keep the spatial cascade, but soften the depth. */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .evidence-stage {
-    height: 26rem;
-  }
-  .evidence-cluster {
-    --depth-scale: 0.5;
-  }
-  .evidence-plane {
-    width: 11.5rem;
-  }
-}
-
-/* Mobile: static staggered stack, no tilt, no parallax, no perspective. */
-@media (max-width: 639px) {
-  .evidence-stage {
-    perspective: none;
-    height: auto;
-  }
-  .evidence-cluster {
-    transform: none !important;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-  .evidence-plane {
-    position: static;
-    width: 100%;
-    opacity: 1;
-    transform: none !important;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.09),
-      0 24px 48px -24px rgba(0, 0, 0, 0.7),
-      0 0 42px -18px rgba(200, 169, 104, 0.14);
-  }
 }
 
 /* Selection detail panels (hero plane detail, demonstration source trace) */
@@ -558,7 +632,10 @@
   opacity: 1;
 }
 
-/* Record-reconstruction stage transition -------------------------------- */
+/* Generic reveal-in-place animation: a block fading and lifting slightly
+   into view without disturbing anything already on screen — used where a
+   new piece of information appears alongside persistent content, never
+   for replacing it. */
 
 @keyframes stage-enter {
   from {
@@ -573,6 +650,261 @@
 
 .stage-enter {
   animation: stage-enter 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Record investigation ("How it works") -------------------------------
+   One persistent case file: four source excerpts that never unmount as
+   the investigation deepens, only reposition (scattered -> chronological)
+   via a transform transition. The desktop stage's own top edge is offset
+   by the active control's measured position (record-investigation.tsx),
+   so revealed content always starts level with the control that revealed
+   it — never below the whole component. */
+
+.investigation-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .investigation-shell {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2.5rem;
+  }
+}
+
+.investigation-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .investigation-controls {
+    width: 20rem;
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.investigation-desktop-stage {
+  flex: 1;
+  min-width: 0;
+  transition: margin-top 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.investigation-mobile-panel .investigation-stage {
+  padding-top: 0.5rem;
+}
+
+.investigation-stage {
+  position: relative;
+  max-width: 40rem;
+}
+
+/* The layer the excerpts live in. Its own height transitions between
+   phases (a short scatter, a taller chronological column) so the stage
+   is only ever as tall as the current phase needs — never a large empty
+   plinth waiting to be filled. */
+.source-excerpt-layer {
+  position: relative;
+  transition: height 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.source-excerpt {
+  position: absolute;
+  top: 0;
+  min-width: 9rem;
+  max-width: 26rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(
+    165deg,
+    rgba(61, 55, 45, 0.9),
+    rgba(37, 33, 27, 0.94)
+  );
+  border: 1px solid rgba(226, 198, 140, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 34px -18px rgba(0, 0, 0, 0.75);
+  transition:
+    left 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.source-excerpt[data-highlighted="true"] {
+  border-color: rgba(226, 198, 140, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(226, 198, 140, 0.3),
+    0 18px 34px -18px rgba(0, 0, 0, 0.75),
+    0 0 40px -10px rgba(226, 198, 140, 0.35);
+}
+
+.source-excerpt-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(226, 198, 140, 0.14);
+  font-family: var(--font-geist-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--smoke);
+}
+
+.source-excerpt-body {
+  margin-top: 0.65rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ivory);
+}
+
+.source-excerpt-meta {
+  margin-top: 0.65rem;
+  font-family: var(--font-geist-mono);
+  font-size: 0.6rem;
+  color: var(--smoke);
+}
+
+.excerpt-flag {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(226, 198, 140, 0.6);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.excerpt-flag:hover,
+.excerpt-flag:focus-visible {
+  color: var(--gold);
+}
+
+.excerpt-flag:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* The reveal area beneath the excerpt layer, in normal flow — always
+   inside the same stage as the excerpts themselves, never a detached
+   panel elsewhere on the page. */
+.conflict-panel {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(226, 198, 140, 0.16);
+}
+
+.conflict-prompt {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--ivory);
+}
+
+.conflict-comparison {
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .conflict-comparison {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.conflict-comparison dt {
+  font-family: var(--font-geist-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.conflict-comparison dd {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ivory);
+}
+
+.conflict-verdict-line {
+  margin-top: 1.1rem;
+  font-family: var(--font-geist-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Provenance trace: a fine champagne-gold connector between short
+   breadcrumb segments, each easing in with a short stagger — motion that
+   reads as tracing a path, not decoration. */
+.trace-breadcrumb {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(226, 198, 140, 0.16);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+}
+
+.trace-breadcrumb li {
+  font-family: var(--font-geist-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--ivory);
+  animation: stage-enter 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.trace-breadcrumb li:not(:last-child)::after {
+  content: "";
+  display: inline-block;
+  width: 1.4rem;
+  height: 1px;
+  margin: 0 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(226, 198, 140, 0.65),
+    rgba(226, 198, 140, 0.15)
+  );
+  vertical-align: middle;
+}
+
+.verdict-panel {
+  margin-top: 1.75rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(226, 198, 140, 0.3);
+  background: rgba(226, 198, 140, 0.06);
+}
+
+.verdict-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ivory);
+}
+
+.verdict-body {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--smoke);
 }
 
 /* Scroll reveal -------------------------------------------------------- */
@@ -601,17 +933,8 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .evidence-cluster {
-    transform: none !important;
-  }
   .reveal {
     opacity: 1 !important;
     transform: none !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) and (min-width: 1024px) {
-  .evidence-plane {
-    transform: translate(-50%, -50%) translateZ(0) rotate(0deg) !important;
   }
 }

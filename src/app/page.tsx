@@ -181,6 +181,10 @@ export default function Home() {
                 finding answerable to its source—before legal expertise
                 turns evidence into strategy.
               </p>
+              <p className="mt-4 max-w-xl text-sm text-smoke">
+                Pre-expert dental record screening for plaintiff and defense
+                counsel.
+              </p>
               <div className="mt-10">
                 <a
                   href="#scope"
@@ -311,7 +315,8 @@ export default function Home() {
             <Reveal className="max-w-2xl">
               <Eyebrow>Discernment</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                A finding is only as credible as its distance from opinion.
+                A finding is only as defensible as the path between source
+                and conclusion.
               </h2>
             </Reveal>
             <ul className="mt-12 grid gap-x-10 gap-y-5 sm:grid-cols-2">
@@ -461,10 +466,6 @@ export default function Home() {
                 </div>
               </Reveal>
             </div>
-            <p className="mt-6 max-w-2xl text-xs text-smoke">
-              Attorneys and firms who refer other attorneys or firms are
-              eligible for a referral credit — ask when you contact us.
-            </p>
           </div>
         </section>
 
@@ -479,10 +480,12 @@ export default function Home() {
               </h2>
               <p className="mt-4 text-smoke">
                 Full Disclosure Verdict does not replace an expert
-                witness — it determines whether retaining one is
-                justified. When a case screens as viable, we can connect
-                you directly with a vetted dental expert witness for
-                formal engagement.
+                witness — it gives counsel a source-linked record
+                assessment to inform the decision whether to retain a
+                licensed expert. When the record identifies questions
+                requiring evaluation by a licensed dental expert, we can
+                connect you directly with a vetted dental expert witness
+                for formal engagement.
               </p>
             </Reveal>
           </div>
@@ -520,7 +523,7 @@ export default function Home() {
                     number: "03",
                     title: "Response",
                     description:
-                      "Results, plus an expert witness introduction if the case screens as viable.",
+                      "Results, plus an expert witness introduction when the record identifies questions requiring evaluation by a licensed dental expert.",
                   },
                 ].map((step) => (
                   <li key={step.number} className="glass-flat p-5">

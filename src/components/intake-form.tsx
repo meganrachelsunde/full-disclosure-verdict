@@ -138,8 +138,8 @@ export function IntakeForm() {
             className={`mt-1.5 resize-none ${inputClasses()}`}
           />
           <p className="mt-1.5 text-xs text-smoke">
-            No patient names or other identifying details, please — this
-            form does not accept real records.
+            No patient names or other identifying details, please — do
+            not enter real records here or in the email this opens.
           </p>
         </div>
       </div>
@@ -149,11 +149,11 @@ export function IntakeForm() {
           type="submit"
           className="inline-flex items-center justify-center rounded-md bg-ivory px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-ivory/90 sm:w-fit"
         >
-          Request screening
+          Prepare screening email
         </button>
         <p className="text-xs text-smoke" aria-live="polite">
           {submitted
-            ? "Opening your email client with these details now."
+            ? `Opening your email client now with these details. If nothing opens, email them directly to ${CONTACT_EMAIL}.`
             : "Submitting opens your email client with these details pre-filled — nothing is transmitted automatically."}
         </p>
       </div>

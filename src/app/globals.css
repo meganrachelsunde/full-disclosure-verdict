@@ -250,6 +250,57 @@
   }
 }
 
+/* The Process section's own filmed backdrop — a different clip from the
+   hero's, with its own (deliberately quieter) treatment. It sits behind
+   content that must stay fully readable, so the scrim is heavier and
+   the video dimmer than the hero's: present as texture, not an event.
+   Same structural pattern as .hero-media-background — absolutely
+   positioned, clipped to its section, feathered by a radial mask — but
+   entirely separate rules so neither treatment can drift into the
+   other. */
+.process-media-background {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: radial-gradient(
+    ellipse 78% 82% at 60% 50%,
+    black 35%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 82% at 60% 50%,
+    black 35%,
+    transparent 100%
+  );
+}
+
+/* Heavier, more even scrim than the hero's: the Process section's text
+   and interactive record sit across the full width, so there is no
+   "clear" side — the footage reads through faintly everywhere. */
+.process-media-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 8, 9, 0.94) 0%,
+    rgba(6, 8, 9, 0.88) 55%,
+    rgba(6, 8, 9, 0.72) 100%
+  );
+}
+
+.process-media-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+  filter: sepia(0.32) saturate(0.75) brightness(0.8) contrast(1.15);
+}
+
 /* Ken Burns hero background: a still image, held at a constant 1.15x
    scale (so it's always oversized relative to its frame) while only the
    pan animates — the overscan is what guarantees the slow drift never

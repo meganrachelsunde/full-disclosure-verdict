@@ -220,8 +220,8 @@ export function RecordInvestigation({
       <div className="conflict-panel" aria-live="polite">
         {!revealed ? (
           <p className="conflict-prompt">
-            Two records cannot both be right. Select the flagged entry to
-            compare.
+            A record that disagrees with itself cannot be read whole.
+            Select the flagged entry to compare.
           </p>
         ) : (
           <>

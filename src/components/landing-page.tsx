@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/accordion";
 import { EvidencePlanes } from "@/components/evidence-planes";
 import { HeroBookVideo } from "@/components/hero-book-video";
+import { ProcessBookVideo } from "@/components/process-book-video";
 import { Reveal } from "@/components/reveal";
-import { RecordInvestigation } from "@/components/record-investigation";
 import { DemonstrationExplorer } from "@/components/demonstration-explorer";
 import { DifferentiationToggle } from "@/components/differentiation-toggle";
 import { IntakeForm } from "@/components/intake-form";
@@ -253,30 +253,32 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
           </div>
         </section>
 
-        {/* Process */}
-        <section id="process" className="border-b border-white/[0.06]">
-          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+        {/* Process + Accountability — one continuous filmed backdrop,
+            no divider between them so the footage reads as a single
+            band behind both. */}
+        <div className="relative overflow-hidden border-b border-white/[0.06]">
+          <ProcessBookVideo />
+
+          {/* Process */}
+          <section id="process">
+            <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
             <Reveal className="max-w-2xl">
-              <Eyebrow>Interactive record</Eyebrow>
+              <Eyebrow>The record</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                A record can look complete and still fail at the point that
-                matters.
+                The absence of gaps is not the presence of proof.
               </h2>
               <p className="mt-4 text-smoke">
-                Inspect a synthetic matter. Every interaction reveals what
-                the record supports, what conflicts, and what still cannot
-                be concluded.
+                A record can be complete and still unexamined. Screening
+                establishes what it supports, where it conflicts, and what
+                remains unresolved.
               </p>
             </Reveal>
-            <Reveal className="mt-12">
-              <RecordInvestigation variant={variant} />
-            </Reveal>
-          </div>
-        </section>
+            </div>
+          </section>
 
-        {/* Accountability */}
-        <section id="accountability" className="border-b border-white/[0.06]">
-          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+          {/* Accountability */}
+          <section id="accountability">
+            <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-24">
             <Reveal className="max-w-2xl">
               <Eyebrow>Accountability</Eyebrow>
               <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight text-ivory sm:text-3xl">
@@ -317,8 +319,9 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 depends on.
               </p>
             </Reveal>
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
 
         {/* Differentiation */}
         <section className="border-b border-white/[0.06] bg-charcoal/18">
@@ -358,7 +361,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             <Reveal className="max-w-2xl">
               <Eyebrow>Same discipline</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                It does not know which side retained it.
+                Evidence owes nothing to the side that offers it.
               </h2>
               <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
                 <p>
@@ -405,7 +408,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             <Reveal className="max-w-2xl">
               <Eyebrow>What it organizes</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                Five categories of work product.
+                The record does not testify until it is examined.
               </h2>
               <p className="mt-4 text-smoke">
                 Each traceable back to the original source documents.
@@ -533,8 +536,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             <Reveal className="max-w-2xl">
               <Eyebrow>Next step</Eyebrow>
               <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                Screening tells you whether to make the call. We can make
-                the introduction.
+                We do not supply the opinion. We supply the expert.
               </h2>
               <p className="mt-4 text-smoke">{copy.nextStepParagraph}</p>
             </Reveal>

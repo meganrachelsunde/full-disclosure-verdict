@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { PracticeAreaVariant } from "@/components/landing-page";
 
 const CONTACT_EMAIL = "megannicolesunde@gmail.com";
 
@@ -22,8 +23,8 @@ const INITIAL: Fields = {
   description: "",
 };
 
-function buildMailto(fields: Fields) {
-  const subject = `Case screening request — ${fields.firm || fields.name}`;
+function buildMailto(fields: Fields, variant: PracticeAreaVariant) {
+  const subject = `Case screening request (${variant}) — ${fields.firm || fields.name}`;
   const body = [
     `Name: ${fields.name}`,
     `Firm: ${fields.firm}`,
@@ -44,19 +45,41 @@ function inputClasses() {
   return "w-full rounded-md border border-white/15 bg-obsidian/40 px-3 py-2.5 text-sm text-ivory placeholder:text-smoke/60 transition-colors focus:border-gold/50 focus:outline-none";
 }
 
-export function IntakeForm() {
+type Status = "idle" | "sending" | "sent" | "fallback";
+
+export function IntakeForm({
+  variant,
+  caseTypePlaceholder,
+  identifyingDetailsWarning,
+}: {
+  variant: PracticeAreaVariant;
+  caseTypePlaceholder: string;
+  identifyingDetailsWarning: string;
+}) {
   const [fields, setFields] = useState<Fields>(INITIAL);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
 
   function update<K extends keyof Fields>(key: K, value: Fields[K]) {
     setFields((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!fields.name || !fields.firm || !fields.email) return;
-    window.location.href = buildMailto(fields);
-    setSubmitted(true);
+
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...fields, variant }),
+      });
+      if (!res.ok) throw new Error("send failed");
+      setStatus("sent");
+    } catch {
+      window.location.href = buildMailto(fields, variant);
+      setStatus("fallback");
+    }
   }
 
   return (
@@ -120,7 +143,7 @@ export function IntakeForm() {
           <input
             id="intake-case-type"
             type="text"
-            placeholder="e.g., dental malpractice"
+            placeholder={caseTypePlaceholder}
             value={fields.caseType}
             onChange={(e) => update("caseType", e.target.value)}
             className={`mt-1.5 ${inputClasses()}`}
@@ -137,24 +160,25 @@ export function IntakeForm() {
             onChange={(e) => update("description", e.target.value)}
             className={`mt-1.5 resize-none ${inputClasses()}`}
           />
-          <p className="mt-1.5 text-xs text-smoke">
-            No patient names or other identifying details, please — do
-            not enter real records here or in the email this opens.
-          </p>
+          <p className="mt-1.5 text-xs text-smoke">{identifyingDetailsWarning}</p>
         </div>
       </div>
 
       <div className="mt-6 flex flex-col gap-2">
         <button
           type="submit"
-          className="inline-flex items-center justify-center rounded-md bg-ivory px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-ivory/90 sm:w-fit"
+          disabled={status === "sending"}
+          className="inline-flex items-center justify-center rounded-md bg-ivory px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-ivory/90 disabled:opacity-60 sm:w-fit"
         >
-          Prepare screening email
+          {status === "sending" ? "Sending…" : "Send screening request"}
         </button>
         <p className="text-xs text-smoke" aria-live="polite">
-          {submitted
-            ? `Opening your email client now with these details. If nothing opens, email them directly to ${CONTACT_EMAIL}.`
-            : "Submitting opens your email client with these details pre-filled — nothing is transmitted automatically."}
+          {status === "sent" &&
+            `Sent. We'll respond within one business day, or reach us directly at ${CONTACT_EMAIL}.`}
+          {status === "fallback" &&
+            `Opening your email client now with these details. If nothing opens, email them directly to ${CONTACT_EMAIL}.`}
+          {(status === "idle" || status === "sending") &&
+            "Submitting sends these details directly to our team — nothing is uploaded, and no documents are attached."}
         </p>
       </div>
     </form>

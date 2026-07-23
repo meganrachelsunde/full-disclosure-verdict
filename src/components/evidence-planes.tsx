@@ -35,7 +35,7 @@ const STATUS_ORDER: Status[] = [
 // staircase, no depth stacking. Order still carries the same reasoning
 // as before (raw intake earns its way up to a verified fact); it's just
 // expressed as a plain top-to-bottom list now.
-const PLANES: Plane[] = [
+const DENTAL_PLANES: Plane[] = [
   {
     id: "verified-facts",
     label: "Verified Facts",
@@ -97,7 +97,74 @@ const PLANES: Plane[] = [
   },
 ];
 
-export function EvidencePlanes() {
+const LITIGATION_PLANES: Plane[] = [
+  {
+    id: "verified-facts",
+    label: "Verified Facts",
+    sub: "Source-linked",
+    detail: {
+      record:
+        "Incident report and access log findings, cross-referenced across two documents.",
+      source: "Docs 003–004, cross-referenced",
+      chronologyPosition: "March 2021 — first entry",
+      status: "supported",
+    },
+  },
+  {
+    id: "chronology",
+    label: "Chronology",
+    sub: "Reconstructed timeline",
+    detail: {
+      record:
+        "Every entry sequenced into a single timeline, each one linked back to its source page.",
+      source: "Compiled from Docs 001–028",
+      chronologyPosition: "Full timeline — March 2021 to January 2022",
+      status: "supported",
+    },
+  },
+  {
+    id: "omissions",
+    label: "Omissions",
+    sub: "1 flagged gap",
+    detail: {
+      record: "No record of the scheduled 30-day corrective-action review.",
+      source: "Expected — not found in production",
+      chronologyPosition: "September 2021 (expected)",
+      status: "incomplete",
+    },
+  },
+  {
+    id: "contradictions",
+    label: "Contradictions",
+    sub: "2 unresolved",
+    detail: {
+      record:
+        "A witness statement names Entity B as the responsible party; the prior follow-up notice names Entity A.",
+      source: "Doc 007, p.3 vs. Doc 003, p.2",
+      chronologyPosition: "January 2022",
+      status: "contradicted",
+    },
+  },
+  {
+    id: "source-records",
+    label: "Source Records",
+    sub: "28 documents",
+    detail: {
+      record:
+        "28 source documents logged on intake — origin and page count recorded for each.",
+      source: "Docs 001–028, full production",
+      chronologyPosition: "Precedes chronology — raw intake",
+      status: "supported",
+    },
+  },
+];
+
+export function EvidencePlanes({
+  variant = "dental",
+}: {
+  variant?: "dental" | "litigation";
+}) {
+  const PLANES = variant === "litigation" ? LITIGATION_PLANES : DENTAL_PLANES;
   const containerRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const planeRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -114,7 +181,7 @@ export function EvidencePlanes() {
     const first = PLANES[0];
     setPinnedId(first.id);
     planeRefs.current[0]?.focus();
-  }, []);
+  }, [PLANES]);
 
   // Close on Escape or on a click/tap outside the column and detail panel.
   useEffect(() => {

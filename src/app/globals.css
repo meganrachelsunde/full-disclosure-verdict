@@ -507,51 +507,6 @@
   border-radius: 0 0.85rem 0.85rem 0.85rem;
 }
 
-/* Vertical sibling of .exhibit-tab, for a stepper that sits beside (not
-   above) the panel it controls — the active step juts toward the panel,
-   inactive steps recede left, instead of a checklist of equal cards. */
-.ledger-tab {
-  position: relative;
-  appearance: none;
-  cursor: pointer;
-  font: inherit;
-  text-align: left;
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  padding: 1rem 1.1rem;
-  border-radius: 0 0.75rem 0.75rem 0;
-  border: 1px solid rgba(245, 240, 230, 0.1);
-  border-left: none;
-  background: rgba(19, 18, 21, 0.42);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: var(--smoke);
-  transform: translateX(-10px);
-  transition:
-    transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
-    background-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.ledger-tab:hover {
-  transform: translateX(-4px);
-}
-
-.ledger-tab:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-}
-
-.ledger-tab[aria-pressed="true"] {
-  background: rgba(28, 26, 31, 0.82);
-  border-color: rgba(200, 169, 104, 0.4);
-  box-shadow:
-    inset 1px 0 0 rgba(200, 169, 104, 0.5),
-    16px 0 28px -20px rgba(0, 0, 0, 0.7);
-  transform: translateX(0);
-}
-
 /* Hero evidence-plane composition ------------------------------------
    One quiet vertical column: identical left edge and width for every
    card, consistent spacing, no diagonal offset or depth stacking, and
@@ -681,96 +636,20 @@
 }
 
 /* Record investigation ("How it works") -------------------------------
-   One persistent case file: four source excerpts that never unmount as
-   the investigation deepens, only reposition (scattered -> chronological)
-   via a transform transition. The desktop stage's own top edge is offset
-   by the active control's measured position (record-investigation.tsx),
-   so revealed content always starts level with the control that revealed
-   it — never below the whole component. */
+   A static case file: source excerpts stack in plain reading order.
+   Selecting the flagged term in a conflicting entry reveals the
+   comparison and verdict beneath — the one interactive moment, not a
+   multi-step walkthrough. */
 
-.investigation-shell {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.source-excerpt-static {
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-@media (min-width: 1024px) {
-  .investigation-shell {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 2.5rem;
-  }
-}
-
-.investigation-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-@media (min-width: 1024px) {
-  .investigation-controls {
-    width: 20rem;
-    position: sticky;
-    top: 6rem;
-  }
-}
-
-.investigation-desktop-stage {
-  flex: 1;
-  min-width: 0;
-  transition: margin-top 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-
-.investigation-mobile-panel .investigation-stage {
-  padding-top: 0.5rem;
-}
-
-.investigation-stage {
-  position: relative;
-  max-width: 40rem;
-}
-
-/* The layer the excerpts live in. Its own height transitions between
-   phases (a short scatter, a taller chronological column) so the stage
-   is only ever as tall as the current phase needs — never a large empty
-   plinth waiting to be filled. */
-.source-excerpt-layer {
-  position: relative;
-  transition: height 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-
-.source-excerpt {
-  position: absolute;
-  top: 0;
-  min-width: 9rem;
-  max-width: 26rem;
-  padding: 0.95rem 1.1rem;
-  border-radius: 0.6rem;
-  background: linear-gradient(
-    165deg,
-    rgba(61, 55, 45, 0.9),
-    rgba(37, 33, 27, 0.94)
-  );
-  border: 1px solid rgba(226, 198, 140, 0.14);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 18px 34px -18px rgba(0, 0, 0, 0.75);
-  transition:
-    left 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-    width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-    border-color 0.4s ease,
-    box-shadow 0.4s ease;
-}
-
-.source-excerpt[data-highlighted="true"] {
+.source-excerpt-static[data-highlighted="true"] {
   border-color: rgba(226, 198, 140, 0.55);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 0 0 1px rgba(226, 198, 140, 0.3),
-    0 18px 34px -18px rgba(0, 0, 0, 0.75),
     0 0 40px -10px rgba(226, 198, 140, 0.35);
 }
 
@@ -778,26 +657,26 @@
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-bottom: 0.55rem;
+  padding-bottom: 0.4rem;
   border-bottom: 1px solid rgba(226, 198, 140, 0.14);
   font-family: var(--font-geist-mono);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--smoke);
 }
 
 .source-excerpt-body {
-  margin-top: 0.65rem;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: var(--ivory);
 }
 
 .source-excerpt-meta {
-  margin-top: 0.65rem;
+  margin-top: 0.45rem;
   font-family: var(--font-geist-mono);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   color: var(--smoke);
 }
 
@@ -831,21 +710,21 @@
    inside the same stage as the excerpts themselves, never a detached
    panel elsewhere on the page. */
 .conflict-panel {
-  margin-top: 1.75rem;
-  padding-top: 1.5rem;
+  margin-top: 1.1rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(226, 198, 140, 0.16);
 }
 
 .conflict-prompt {
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  line-height: 1.5;
+  font-size: 0.92rem;
+  line-height: 1.45;
   color: var(--ivory);
 }
 
 .conflict-comparison {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.65rem;
 }
 
 @media (min-width: 640px) {
@@ -856,83 +735,26 @@
 
 .conflict-comparison dt {
   font-family: var(--font-geist-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--gold);
 }
 
 .conflict-comparison dd {
-  margin-top: 0.3rem;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
   color: var(--ivory);
 }
 
 .conflict-verdict-line {
-  margin-top: 1.1rem;
+  margin-top: 0.85rem;
   font-family: var(--font-geist-mono);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--gold);
-}
-
-/* Provenance trace: a fine champagne-gold connector between short
-   breadcrumb segments, each easing in with a short stagger — motion that
-   reads as tracing a path, not decoration. */
-.trace-breadcrumb {
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(226, 198, 140, 0.16);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0;
-  list-style: none;
-}
-
-.trace-breadcrumb li {
-  font-family: var(--font-geist-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.03em;
-  color: var(--ivory);
-  animation: stage-enter 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
-}
-
-.trace-breadcrumb li:not(:last-child)::after {
-  content: "";
-  display: inline-block;
-  width: 1.4rem;
-  height: 1px;
-  margin: 0 0.5rem;
-  background: linear-gradient(
-    90deg,
-    rgba(226, 198, 140, 0.65),
-    rgba(226, 198, 140, 0.15)
-  );
-  vertical-align: middle;
-}
-
-.verdict-panel {
-  margin-top: 1.75rem;
-  padding: 1.25rem 1.4rem;
-  border-radius: 0.6rem;
-  border: 1px solid rgba(226, 198, 140, 0.3);
-  background: rgba(226, 198, 140, 0.06);
-}
-
-.verdict-heading {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  color: var(--ivory);
-}
-
-.verdict-body {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--smoke);
 }
 
 /* Scroll reveal -------------------------------------------------------- */

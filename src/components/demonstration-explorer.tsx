@@ -21,7 +21,7 @@ const STATUS_LABEL: Record<DemoStatus, string> = {
   unresolved: "Unresolved",
 };
 
-const DEMO_RECORDS: DemoRecord[] = [
+const DENTAL_DEMO_RECORDS: DemoRecord[] = [
   {
     id: "r1",
     date: "2021-03-04",
@@ -66,6 +66,51 @@ const DEMO_RECORDS: DemoRecord[] = [
   },
 ];
 
+const LITIGATION_DEMO_RECORDS: DemoRecord[] = [
+  {
+    id: "r1",
+    date: "2021-03-04",
+    provider: "J. Reyes, Site Supervisor",
+    entry: "Initial incident report filed. Photographs attached to file.",
+    source: "Doc 003, p. 1–2",
+    status: "supported",
+  },
+  {
+    id: "r2",
+    date: "2021-03-04",
+    provider: "J. Reyes, Site Supervisor",
+    entry: "Access log pulled same day — no comparison notes filed.",
+    source: "Doc 004, p. 1",
+    status: "unresolved",
+  },
+  {
+    id: "r3",
+    date: "2021-09-17",
+    provider: "Northfield Logistics (fictional)",
+    entry: "No record of the scheduled 30-day corrective-action review.",
+    source: "Gap — expected, not found",
+    status: "missing-source",
+  },
+  {
+    id: "r4",
+    date: "2022-01-11",
+    provider: "R. Alvarez",
+    entry:
+      "Witness statement names Entity B as responsible; prior notice named Entity A.",
+    source: "Doc 007, p.3 vs. Doc 003, p.2",
+    status: "contradicted",
+  },
+  {
+    id: "r5",
+    date: "2022-06-02",
+    provider: "R. Alvarez",
+    entry:
+      'Follow-up note references "the prior report" without specifying which one.',
+    source: "Doc 009, p.2 — ambiguous reference",
+    status: "unresolved",
+  },
+];
+
 const FILTERS: { key: "all" | DemoStatus; label: string }[] = [
   { key: "all", label: "All" },
   { key: "supported", label: "Supported" },
@@ -74,7 +119,13 @@ const FILTERS: { key: "all" | DemoStatus; label: string }[] = [
   { key: "unresolved", label: "Unresolved" },
 ];
 
-export function DemonstrationExplorer() {
+export function DemonstrationExplorer({
+  variant = "dental",
+}: {
+  variant?: "dental" | "litigation";
+}) {
+  const DEMO_RECORDS =
+    variant === "litigation" ? LITIGATION_DEMO_RECORDS : DENTAL_DEMO_RECORDS;
   const [filter, setFilter] = useState<"all" | DemoStatus>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);

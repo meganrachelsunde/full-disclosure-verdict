@@ -155,6 +155,13 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
   const copy = content[variant];
 
+  // Card payment is offered only once a live Stripe key is present. A test
+  // key would send a real client to a Checkout page that rejects their card,
+  // so until then the pricing card routes to intake instead. Swapping the
+  // key in the environment turns the pay button back on by itself.
+  const paymentsLive =
+    process.env.STRIPE_SECRET_KEY?.startsWith("sk_live_") ?? false;
+
   return (
     <>
       <a
@@ -511,7 +518,16 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                     pass — the read before deciding whether to retain an
                     expert.
                   </p>
-                  <PayButton className="mt-6" label="Pay the screening fee" />
+                  {paymentsLive ? (
+                    <PayButton className="mt-6" label="Pay the screening fee" />
+                  ) : (
+                    <a
+                      href="#get-started"
+                      className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-ivory px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-ivory/90 sm:w-fit"
+                    >
+                      Request screening
+                    </a>
+                  )}
                 </div>
               </Reveal>
               <Reveal>
@@ -650,13 +666,25 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             determine standard of care, causation, damages, or case merit.
             No document-upload functionality is active in this build.
           </p>
-          <p className="mt-4 text-xs text-smoke">
+          <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-smoke">
             <Link
               href="#scope"
               className="underline underline-offset-4 hover:text-ivory"
             >
               Full scope statement
             </Link>
+            <Link
+              href="/terms"
+              className="underline underline-offset-4 hover:text-ivory"
+            >
+              Terms and refund policy
+            </Link>
+            <a
+              href="mailto:megannicolesunde@gmail.com"
+              className="underline underline-offset-4 hover:text-ivory"
+            >
+              megannicolesunde@gmail.com
+            </a>
           </p>
         </div>
       </footer>

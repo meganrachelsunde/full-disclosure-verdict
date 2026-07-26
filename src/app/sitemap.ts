@@ -12,5 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: "https://fulldisclosure.agency/terms",
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 }

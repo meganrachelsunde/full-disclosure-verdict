@@ -27,7 +27,7 @@ function buildMailto(fields: Fields, variant: PracticeAreaVariant) {
   const subject = `Case screening request (${variant}) — ${fields.firm || fields.name}`;
   const body = [
     `Name: ${fields.name}`,
-    `Firm: ${fields.firm}`,
+    fields.firm ? `Firm: ${fields.firm}` : null,
     `Email: ${fields.email}`,
     fields.phone ? `Phone: ${fields.phone}` : null,
     fields.caseType ? `Case type: ${fields.caseType}` : null,
@@ -65,7 +65,7 @@ export function IntakeForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fields.name || !fields.firm || !fields.email) return;
+    if (!fields.name || !fields.email) return;
 
     setStatus("sending");
     try {
@@ -100,12 +100,11 @@ export function IntakeForm({
         </div>
         <div>
           <label htmlFor="intake-firm" className="text-xs font-medium text-ivory">
-            Firm / organization
+            Firm / organization <span className="text-smoke">(optional)</span>
           </label>
           <input
             id="intake-firm"
             type="text"
-            required
             value={fields.firm}
             onChange={(e) => update("firm", e.target.value)}
             className={`mt-1.5 ${inputClasses()}`}

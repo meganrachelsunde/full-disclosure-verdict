@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { EvidencePlanes } from "@/components/evidence-planes";
+import { PayButton } from "@/components/pay-button";
 import { HeroBookVideo } from "@/components/hero-book-video";
 import { ProcessBookVideo } from "@/components/process-book-video";
 import { Reveal } from "@/components/reveal";
@@ -510,6 +511,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                     pass — the read before deciding whether to retain an
                     expert.
                   </p>
+                  <PayButton className="mt-6" label="Pay the screening fee" />
                 </div>
               </Reveal>
               <Reveal>

@@ -53,7 +53,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "no session url" }, { status: 502 });
     }
     return NextResponse.json({ url: session.url });
-  } catch {
+  } catch (err) {
+    // Server log only — the client gets a generic message. Stripe redacts the
+    // key in its own error text, so this is safe to record.
+    console.error(
+      "Stripe checkout session failed:",
+      err instanceof Error ? err.message : err,
+    );
     return NextResponse.json({ error: "checkout failed" }, { status: 502 });
   }
 }

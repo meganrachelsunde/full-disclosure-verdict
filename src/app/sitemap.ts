@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://fulldisclosure.agency/litigation",
+      url: "https://fulldisclosure.agency/dental",
       changeFrequency: "monthly",
       priority: 0.9,
     },

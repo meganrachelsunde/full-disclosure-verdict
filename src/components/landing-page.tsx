@@ -27,12 +27,12 @@ import { LitigationExamination } from "@/components/litigation-examination";
 export type PracticeAreaVariant = "dental" | "litigation";
 
 const discernmentPoints = [
-  "Evidence remains separate from assertion.",
-  "Inference remains separate from fact.",
-  "Contradiction is preserved rather than silently resolved.",
-  "Missing evidence is not converted into proof.",
-  "Uncertainty remains visible until a qualified human resolves it.",
-  "Favorable and unfavorable conclusions receive the same scrutiny.",
+  "Evidence stays separate from assertion.",
+  "Inference stays separate from fact.",
+  "Contradictions are preserved, not quietly resolved.",
+  "Missing evidence is never counted as proof.",
+  "Uncertainty stays visible until a qualified human resolves it.",
+  "Favorable and unfavorable findings get the same scrutiny.",
 ];
 
 const capabilities = [
@@ -40,31 +40,31 @@ const capabilities = [
     icon: FileStack,
     title: "Record Inventory",
     description:
-      "A complete, source-traceable index of every document received — origin, date range, and page count — so nothing in the file is unaccounted for.",
+      "Every document received, indexed by origin, date range, and page count. Nothing in the file goes unaccounted for.",
   },
   {
     icon: GitCommitVertical,
     title: "Source-Linked Chronology",
     description:
-      "Material events arranged in chronological order, with every entry traceable back to the specific document and page it came from.",
+      "What happened, in order, with every entry linked to the document and page it came from.",
   },
   {
     icon: SearchX,
     title: "Missing-Document & Gap Detection",
     description:
-      "Systematic screening for expected-but-absent records and unexplained gaps in the record's timeline, flagged for follow-up.",
+      "Records that should be there and are not, plus unexplained breaks in the timeline — flagged for follow-up.",
   },
   {
     icon: ShieldAlert,
     title: "Contradiction Preservation",
     description:
-      "Conflicting entries across sources or dates are surfaced and preserved side by side — not resolved or interpreted — for expert review.",
+      "Entries that conflict are set side by side and left that way. We surface the conflict; we do not settle it.",
   },
   {
     icon: Users,
     title: "Attorney & Licensed-Expert Handoff",
     description:
-      "Organized, citation-ready materials structured for efficient attorney review and clean referral into licensed-expert analysis.",
+      "Citation-ready materials built for fast attorney review and a clean handoff to a licensed expert.",
   },
 ];
 
@@ -72,27 +72,56 @@ const accountabilityTags = [
   {
     label: "Source",
     description:
-      "Every finding is traceable back to the specific document and page it came from — nothing is asserted without a citation into the record.",
+      "Every finding points back to the document and page it came from. Nothing is asserted without a citation into the record.",
   },
   {
     label: "Chronology",
     description:
-      "Findings are placed in sequence, so what happened before and after a given entry is never lost or reordered to fit a narrative.",
+      "Findings stay in sequence, so what came before and after is never lost or reordered to fit a story.",
   },
   {
     label: "Reasoning path",
     description:
-      "The steps from source document to conclusion are preserved and visible, not collapsed into an unexplained result.",
+      "The steps from document to conclusion stay visible, not collapsed into an unexplained result.",
   },
   {
     label: "Confidence level",
     description:
-      "Each finding is marked by how well the record actually supports it — supported, contradicted, incomplete, or unresolved — never flattened into a single verdict.",
+      "Each finding is marked by how well the record supports it — supported, contradicted, incomplete, or unresolved — never flattened into one verdict.",
   },
   {
     label: "Unresolved conflicts",
     description:
-      "Contradictions between sources are preserved side by side for review, not silently resolved in either direction.",
+      "Contradictions between sources stay side by side for review, not settled in either direction.",
+  },
+];
+
+// Credentials held by Megan Sunde, grouped by what each one qualifies.
+// Every entry is a credential actually issued and on file — no titles are
+// implied, inferred, or rounded up.
+const credentials = [
+  {
+    field: "Legal research",
+    items: [
+      "Jury Research Analyst Certification",
+      "Juror and open-source research methodology",
+    ],
+  },
+  {
+    field: "Clinical record",
+    items: [
+      "Minnesota Licensed Dental Assistant",
+      "DANB — Radiation Health and Safety",
+      "DANB — Infection Control",
+      "15+ years clinical practice",
+    ],
+  },
+  {
+    field: "Method",
+    items: [
+      "AI Fluency: Framework & Foundations — Anthropic",
+      "Delegation · Description · Discernment · Diligence",
+    ],
   },
 ];
 
@@ -111,11 +140,11 @@ const content: Record<
 > = {
   dental: {
     heroSubline:
-      "Pre-expert dental record screening for plaintiff and defense counsel.",
+      "Dental and medical-record matters, screened by a dental professional with 15+ years inside the practices that produce the records.",
     nextStepParagraph:
-      "Full Disclosure Verdict does not replace an expert witness — it gives counsel a source-linked record assessment to inform the decision whether to retain a licensed expert. When the record identifies questions requiring evaluation by a licensed dental expert, we can connect you directly with a vetted dental expert witness for formal engagement.",
+      "We do not replace an expert witness. We give you a source-linked read on the record so you can decide whether to retain one. When the record raises questions that need a licensed dental expert, we can connect you with a vetted dental expert witness for formal engagement.",
     getStartedStep3:
-      "Results, plus an expert witness introduction when the record identifies questions requiring evaluation by a licensed dental expert.",
+      "Your results — plus an expert witness introduction when the record raises questions for a licensed dental expert.",
     caseTypePlaceholder: "e.g., dental malpractice",
     identifyingDetailsWarning:
       "No patient names or other identifying details, please — do not enter real records here or in the email this opens.",
@@ -126,11 +155,11 @@ const content: Record<
   },
   litigation: {
     heroSubline:
-      "Pre-expert record screening for plaintiff and defense counsel — any case type, any party.",
+      "For plaintiff and defense counsel — any case type, any party.",
     nextStepParagraph:
-      "Full Disclosure Verdict does not replace an expert witness — it gives counsel a source-linked record assessment to inform the decision whether to retain a licensed expert. When the record identifies questions requiring evaluation by a licensed expert in the relevant field, we can connect you directly with a vetted expert witness for formal engagement.",
+      "We do not replace an expert witness. We give you a source-linked read on the record so you can decide whether to retain one. When the record raises questions that need a licensed expert in the relevant field, we can connect you with a vetted expert witness for formal engagement.",
     getStartedStep3:
-      "Results, plus an expert witness introduction when the record identifies questions requiring evaluation by a licensed expert in the relevant field.",
+      "Your results — plus an expert witness introduction when the record raises questions for a licensed expert in the relevant field.",
     caseTypePlaceholder: "e.g., personal injury, medical malpractice, contract dispute",
     identifyingDetailsWarning:
       "No client, party, or other identifying details, please — do not enter real records here or in the email this opens.",
@@ -208,6 +237,12 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
               >
                 Pricing
               </a>
+              <a
+                href="#credentials"
+                className="transition-colors hover:text-ivory"
+              >
+                Credentials
+              </a>
               <a href="#scope" className="transition-colors hover:text-ivory">
                 Scope
               </a>
@@ -236,15 +271,13 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             <div className="hero-glass-panel max-w-xl p-8 sm:p-10 lg:p-12">
               <Eyebrow>Record-integrity intelligence</Eyebrow>
               <h1 className="mt-6 max-w-xl font-display text-4xl leading-[1.15] tracking-tight text-ivory sm:text-5xl">
-                The conclusion is only as defensible as the record that
-                produced it.
+                A conclusion is only as good as the record behind it.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-smoke">
-                Full Disclosure Verdict is record-integrity intelligence for
-                complex legal matters. It reconstructs chronology, preserves
-                contradiction and uncertainty, and makes every material
-                finding answerable to its source—before legal expertise
-                turns evidence into strategy.
+                Full Disclosure Verdict screens a case file before an expert
+                reads it. We rebuild the timeline, keep every contradiction
+                visible, flag what is missing, and tie each finding to the
+                page it came from.
               </p>
               <p className="mt-4 max-w-xl text-sm text-smoke">
                 {copy.heroSubline}
@@ -276,9 +309,8 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 The absence of gaps is not the presence of proof.
               </h2>
               <p className="mt-4 text-smoke">
-                A record can be complete and still unexamined. Screening
-                establishes what it supports, where it conflicts, and what
-                remains unresolved.
+                A complete file is not a read file. Screening shows what it
+                supports, where it conflicts, and what is still open.
               </p>
             </Reveal>
             </div>
@@ -290,15 +322,15 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             <Reveal className="max-w-2xl">
               <Eyebrow>Accountability</Eyebrow>
               <h2 className="mt-4 font-display text-2xl leading-snug tracking-tight text-ivory sm:text-3xl">
-                Most systems organize the record. Full Disclosure Verdict
-                tests the conclusion against it.
+                Most tools organize the record. We test the conclusion
+                against it.
               </h2>
               <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
                 <p>
-                  It does not stop at collection, chronology, or summary.
-                  Each material finding is examined against its source,
-                  sequence, conflicts, omissions, and inferential
-                  steps—with the reasoning preserved beside the result.
+                  We do not stop at collection, chronology, or summary. Every
+                  material finding is checked against its source, its place in
+                  the timeline, what contradicts it, and what is missing — with
+                  the reasoning kept beside the result.
                 </p>
                 <p className="text-ivory">
                   Organization improves access. Discernment determines what
@@ -322,9 +354,8 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 ))}
               </Accordion>
               <p className="mt-12 border-l-2 border-gold/60 pl-6 font-display text-2xl leading-snug text-ivory">
-                Full Disclosure Verdict does not replace legal expertise. It
-                preserves the evidentiary distinctions legal expertise
-                depends on.
+                We do not replace legal expertise. We preserve the
+                evidentiary distinctions it depends on.
               </p>
             </Reveal>
             </div>
@@ -341,8 +372,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 <>
                   <Eyebrow>The difference</Eyebrow>
                   <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
-                    Legal tools work from the record. Full Disclosure Verdict
-                    works on it.
+                    Legal tools work from the record. We work on it.
                   </h2>
                   <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
                     <p>
@@ -350,10 +380,9 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                       assumption: that the underlying record is sound.
                     </p>
                     <p>
-                      Full Disclosure Verdict tests that assumption. It
-                      reconstructs sequence, preserves contradiction, identifies
-                      what is missing, and keeps every material finding tied to
-                      its source.
+                      We test that assumption — rebuild the sequence, keep
+                      contradictions visible, name what is missing, and tie
+                      every finding to its source.
                     </p>
                   </div>
                   <DifferentiationToggle />
@@ -373,9 +402,9 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
               </h2>
               <div className="mt-6 space-y-4 text-lg leading-8 text-smoke">
                 <p>
-                  Plaintiff or defense, the system does not optimize for a
-                  preferred conclusion. It shows what the record supports,
-                  what it contradicts, and what it cannot yet establish.
+                  Plaintiff or defense, nothing here is tuned toward a
+                  preferred answer. You get what the record supports, what it
+                  contradicts, and what it cannot yet establish.
                 </p>
               </div>
             </Reveal>
@@ -419,7 +448,7 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 The record does not testify until it is examined.
               </h2>
               <p className="mt-4 text-smoke">
-                Each traceable back to the original source documents.
+                Every item traces back to a source document.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -495,9 +524,9 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 Priced below the decision it informs.
               </h2>
               <p className="mt-4 text-smoke">
-                A single case screening costs a small fraction of a single
-                expert retainer — enough to find out before committing to
-                the larger spend.
+                One screening costs a fraction of one expert retainer — enough
+                to find out what is in the file before committing to the
+                larger spend.
               </p>
             </Reveal>
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -513,10 +542,9 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                     </span>
                   </p>
                   <p className="mt-4 text-sm leading-6 text-smoke">
-                    Record inventory, source-linked chronology, gap and
-                    contradiction flags, and source trace for one case, one
-                    pass — the read before deciding whether to retain an
-                    expert.
+                    Inventory, source-linked timeline, gap and contradiction
+                    flags, and source tracing — one case, one pass. The read
+                    before you decide on an expert.
                   </p>
                   {paymentsLive ? (
                     <PayButton className="mt-6" label="Pay the screening fee" />
@@ -539,8 +567,8 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                     Custom
                   </p>
                   <p className="mt-4 text-sm leading-6 text-smoke">
-                    For firms screening cases on a recurring basis. Priced
-                    per case at volume — contact us for a firm rate.
+                    For firms screening cases regularly. Priced per case at
+                    volume — contact us for a firm rate.
                   </p>
                 </div>
               </Reveal>
@@ -570,8 +598,8 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
                 Submit a case for screening.
               </h2>
               <p className="mt-4 text-smoke">
-                A few details are enough to begin. No documents are
-                uploaded here — this starts the conversation.
+                A few details are enough to begin. No documents are uploaded
+                here — this just starts the conversation.
               </p>
             </Reveal>
 
@@ -620,6 +648,54 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
           </div>
         </section>
 
+        {/* Credentials */}
+        <section id="credentials" className="border-b border-white/[0.06]">
+          <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+            <Reveal className="max-w-2xl">
+              <Eyebrow>Who does the work</Eyebrow>
+              <h2 className="mt-4 font-display text-3xl tracking-tight text-ivory">
+                Megan Sunde
+              </h2>
+              <p className="mt-4 text-smoke">
+                Screening is done by one person, not a queue. Fifteen years
+                reading clinical records inside the practices that produce
+                them, trained in juror and open-source research methodology,
+                and certified in the framework this system&apos;s discipline
+                is built on.
+              </p>
+            </Reveal>
+            <div className="mt-12 grid gap-6 sm:grid-cols-3">
+              {credentials.map((group) => (
+                <Reveal key={group.field}>
+                  <div className="glass-panel h-full p-6">
+                    <p className="font-mono text-xs uppercase tracking-wider text-gold">
+                      {group.field}
+                    </p>
+                    <ul className="mt-4 space-y-2.5">
+                      {group.items.map((item) => (
+                        <li
+                          key={item}
+                          className="text-sm leading-6 text-smoke"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+            <p className="mt-8 max-w-2xl text-xs leading-6 text-smoke">
+              Credentials describe the training behind the screening work.
+              They are not a license to practice law or to render dental,
+              medical, or standard-of-care opinions, and Full Disclosure
+              Verdict does not offer any. Certificate names appear as issued;
+              listing them implies no endorsement or affiliation by the
+              issuing organizations.
+            </p>
+          </div>
+        </section>
+
         {/* Scope */}
         <section id="scope" className="border-b border-white/[0.06]">
           <div className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
@@ -631,8 +707,8 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
               <p className="mt-4 text-smoke">
                 Full Disclosure Verdict identifies what the record supports,
                 where it conflicts, what is absent, and what remains
-                unresolved. It does not determine standard of care,
-                causation, damages, or case merit.
+                unresolved. It does not determine standard of care, causation,
+                damages, or case merit.
               </p>
             </div>
             <ul className="mt-5 flex flex-wrap gap-x-2 gap-y-1.5 text-xs text-smoke">
@@ -656,9 +732,11 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
           <p className="font-display text-sm text-ivory">
             Full Disclosure Verdict
           </p>
-          <p className="mt-1.5 text-xs text-smoke">
-            Megan Sunde · Minnesota Licensed Dental Assistant · 15+ Years
-            Clinical Practice · National DANB Credentialing
+          <p className="mt-1.5 text-xs leading-6 text-smoke">
+            Megan Sunde · Jury Research Analyst Certification ·
+            Minnesota Licensed Dental Assistant · 15+ Years Clinical Practice ·
+            DANB Radiation Health and Safety · DANB Infection Control · AI
+            Fluency: Framework &amp; Foundations, Anthropic
           </p>
           <p className="mt-3 max-w-2xl text-xs leading-6 text-smoke">
             Full Disclosure Verdict organizes records for pre-expert review.
@@ -667,6 +745,12 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
             No document-upload functionality is active in this build.
           </p>
           <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-smoke">
+            <Link
+              href="#credentials"
+              className="underline underline-offset-4 hover:text-ivory"
+            >
+              Credentials
+            </Link>
             <Link
               href="#scope"
               className="underline underline-offset-4 hover:text-ivory"

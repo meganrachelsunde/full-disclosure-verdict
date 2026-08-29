@@ -1,9 +1,11 @@
 import Link from "next/link";
 import type { PracticeAreaVariant } from "@/components/landing-page";
 
+// Litigation is the primary practice area and owns the root route.
+// Dental is the secondary specialty, served from /dental.
 const tabs: { variant: PracticeAreaVariant; href: string; label: string }[] = [
-  { variant: "dental", href: "/", label: "Dental" },
-  { variant: "litigation", href: "/litigation", label: "Litigation — Any Case" },
+  { variant: "litigation", href: "/", label: "Litigation — Any Case" },
+  { variant: "dental", href: "/dental", label: "Dental" },
 ];
 
 export function PracticeAreaTabs({ active }: { active: PracticeAreaVariant }) {

@@ -25,20 +25,20 @@ export const metadata: Metadata = {
     template: "%s | Full Disclosure Verdict",
   },
   description:
-    "Record-integrity intelligence for complex legal matters. Full Disclosure Verdict reconstructs chronology, preserves contradiction and uncertainty, and keeps every material finding traceable to its source.",
+    "Pre-expert record screening for plaintiff and defense counsel — any case type, any party. Full Disclosure Verdict rebuilds the timeline, keeps contradictions visible, flags what is missing, and ties every finding to its source.",
   openGraph: {
     type: "website",
     siteName: "Full Disclosure Verdict",
     url: "https://fulldisclosure.agency",
     title: "Full Disclosure Verdict",
     description:
-      "Record-integrity intelligence for complex legal matters. Pre-expert record screening for plaintiff and defense counsel.",
+      "Pre-expert record screening for plaintiff and defense counsel — any case type, any party. Dental record screening as a specialty.",
   },
   twitter: {
     card: "summary",
     title: "Full Disclosure Verdict",
     description:
-      "Record-integrity intelligence for complex legal matters. Pre-expert record screening for plaintiff and defense counsel.",
+      "Pre-expert record screening for plaintiff and defense counsel — any case type, any party. Dental record screening as a specialty.",
   },
   // Set GOOGLE_SITE_VERIFICATION in the environment to emit the
   // google-site-verification meta tag Search Console asks for. DNS
@@ -68,6 +68,54 @@ const structuredData = {
         email: "megannicolesunde@gmail.com",
         url: "https://fulldisclosure.agency/#get-started",
       },
+      founder: { "@id": "https://fulldisclosure.agency/#megan-sunde" },
+    },
+    {
+      "@type": "Person",
+      "@id": "https://fulldisclosure.agency/#megan-sunde",
+      name: "Megan Sunde",
+      jobTitle: "Record screening analyst",
+      worksFor: { "@id": "https://fulldisclosure.agency/#organization" },
+      hasCredential: [
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Jury Research Analyst Certification",
+          credentialCategory: "certificate",
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Licensed Dental Assistant",
+          credentialCategory: "license",
+          recognizedBy: {
+            "@type": "Organization",
+            name: "Minnesota Board of Dentistry",
+          },
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Radiation Health and Safety",
+          credentialCategory: "certificate",
+          recognizedBy: {
+            "@type": "Organization",
+            name: "Dental Assisting National Board",
+          },
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Infection Control",
+          credentialCategory: "certificate",
+          recognizedBy: {
+            "@type": "Organization",
+            name: "Dental Assisting National Board",
+          },
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "AI Fluency: Framework & Foundations",
+          credentialCategory: "certificate",
+          recognizedBy: { "@type": "Organization", name: "Anthropic" },
+        },
+      ],
     },
     {
       "@type": "WebSite",

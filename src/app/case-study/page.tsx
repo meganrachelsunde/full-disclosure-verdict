@@ -76,10 +76,12 @@ export default function CaseStudy() {
         <BookButton />
       </div>
       <p className="mt-8 text-sm leading-6 text-smoke">
-        In a live family-court matter, an agent kept a chronology across
-        pleadings, disclosures, and records, with every entry tied to its
-        source. A human reviewed every move before anything was sent or filed.
-        The value: errors that never reached the case.
+        In a live family-court matter, an autonomous agent built and maintained
+        a source-linked chronology across pleadings, disclosures, attendance
+        records, and correspondence. Every entry kept its source reference
+        (document and page). Every case-touching recommendation went through a
+        human before anything was sent, filed, or served. The value was not
+        speed — it was the errors that never reached the case.
       </p>
 
       <Catch
@@ -87,11 +89,15 @@ export default function CaseStudy() {
         heading="One inverted fact, fifteen documents, a false deadline"
       >
         <p>
-          A misread caption reversed who had requested disclosure. The error
-          spread through about fifteen documents and became an urgent "serve
-          now or lose evidence" warning. The operator challenged it; the rule
-          text confirmed no duty, no clock, and no risk. Every affected
-          document was corrected and independently audited.
+          A single misread caption reversed who had requested disclosure from
+          whom. The error spread through about fifteen working documents and
+          grew into an urgent warning: serve now or lose key evidence. The
+          operator knew what had actually arrived in the mail and challenged
+          the premise. Re-checking the governing rule text showed no request
+          had run to her, so no duty, no clock, no exclusion risk existed. A
+          correction banner went onto every affected document, and an
+          independent audit confirmed the fix and listed every place the error
+          had spread.
         </p>
       </Catch>
 
@@ -100,10 +106,13 @@ export default function CaseStudy() {
         heading="Not asking a question the record had already answered"
       >
         <p>
-          A drafted records demand would have asked the other side to confirm
-          a gap their own sworn pleading already showed. The operator stopped
-          it: sending it risked after-the-fact records turning a clean
-          admission into a contested fact.
+          The agent drafted a records demand asking the other side to confirm
+          that certain records did not exist. The operator stopped it. The
+          opposing party&rsquo;s own sworn pleading already listed every step
+          taken, and the missing step was not among them. Sending the demand
+          risked inviting after-the-fact records that would turn a clean
+          admission into a contested fact. A second review agreed: hold the
+          demand and preserve the admission as written.
         </p>
       </Catch>
 
@@ -112,9 +121,12 @@ export default function CaseStudy() {
         heading="Fabricated citations stopped at the gate"
       >
         <p>
-          Sub-agents produced unverifiable and misapplied citations. Every
-          authority was checked against primary sources; none of the bad ones
-          reached the client. Sub-agents propose, primary sources decide.
+          Sub-agents asked to pressure-test strategy produced case citations
+          that could not be verified, and one real citation attached to the
+          wrong subject. None reached the client. The agent checked every
+          authority against primary sources and discarded what failed. The
+          rule that came out of it still holds: sub-agents propose, the primary
+          source decides, and only verified law moves forward.
         </p>
       </Catch>
 
@@ -123,9 +135,10 @@ export default function CaseStudy() {
         heading="Numbers flagged before anyone relied on them"
       >
         <p>
-          Favorable attendance totals were flagged before use: which days
-          still needed documentation, which were the other side's strongest,
-          and that the produced records lacked the key to read their own codes.
+          Cross-referencing coded attendance against the charged date window
+          produced favorable totals. Before anyone relied on the numbers, the
+          agent flagged the missing key: the other side&rsquo;s failure to
+          produce, not the client&rsquo;s.
         </p>
       </Catch>
 

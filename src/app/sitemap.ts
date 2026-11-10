@@ -13,6 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: "https://fulldisclosure.agency/case-study",
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: "https://fulldisclosure.agency/terms",
       changeFrequency: "yearly",
       priority: 0.3,

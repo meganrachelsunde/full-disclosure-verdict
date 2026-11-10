@@ -231,6 +231,12 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
               >
                 Demonstration
               </a>
+              <Link
+                href="/case-study"
+                className="transition-colors hover:text-ivory"
+              >
+                Case Study
+              </Link>
               <a
                 href="#pricing"
                 className="transition-colors hover:text-ivory"
@@ -756,6 +762,12 @@ export function LandingPage({ variant }: { variant: PracticeAreaVariant }) {
               className="underline underline-offset-4 hover:text-ivory"
             >
               Full scope statement
+            </Link>
+            <Link
+              href="/case-study"
+              className="underline underline-offset-4 hover:text-ivory"
+            >
+              Case study
             </Link>
             <Link
               href="/terms"

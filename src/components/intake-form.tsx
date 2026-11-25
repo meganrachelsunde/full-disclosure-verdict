@@ -58,6 +58,8 @@ export function IntakeForm({
 }) {
   const [fields, setFields] = useState<Fields>(INITIAL);
   const [status, setStatus] = useState<Status>("idle");
+  // Hidden from people; bots that fill every field fill this one too.
+  const [trap, setTrap] = useState("");
 
   function update<K extends keyof Fields>(key: K, value: Fields[K]) {
     setFields((prev) => ({ ...prev, [key]: value }));
@@ -65,6 +67,8 @@ export function IntakeForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    // One send per filled-in form: a second click after "Sent" does nothing.
+    if (status === "sending" || status === "sent") return;
     if (!fields.name || !fields.email) return;
 
     setStatus("sending");
@@ -72,9 +76,10 @@ export function IntakeForm({
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, variant }),
+        body: JSON.stringify({ ...fields, variant, website: trap }),
       });
       if (!res.ok) throw new Error("send failed");
+      setFields(INITIAL);
       setStatus("sent");
     } catch {
       window.location.href = buildMailto(fields, variant);
@@ -84,6 +89,18 @@ export function IntakeForm({
 
   return (
     <form onSubmit={handleSubmit} className="glass-panel p-6 sm:p-8">
+      <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="intake-website">Leave this field empty</label>
+        <input
+          id="intake-website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={trap}
+          onChange={(e) => setTrap(e.target.value)}
+        />
+      </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="intake-name" className="text-xs font-medium text-ivory">
@@ -166,10 +183,10 @@ export function IntakeForm({
       <div className="mt-6 flex flex-col gap-2">
         <button
           type="submit"
-          disabled={status === "sending"}
+          disabled={status === "sending" || status === "sent"}
           className="inline-flex items-center justify-center rounded-md bg-ivory px-5 py-2.5 text-sm font-medium text-obsidian transition-colors hover:bg-ivory/90 disabled:opacity-60 sm:w-fit"
         >
-          {status === "sending" ? "Sending…" : "Send screening request"}
+          {status === "sending" ? "Sending…" : status === "sent" ? "Sent" : "Send screening request"}
         </button>
         <p className="text-xs text-smoke" aria-live="polite">
           {status === "sent" &&

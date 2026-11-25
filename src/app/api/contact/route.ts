@@ -19,10 +19,45 @@ type Payload = {
   caseType?: unknown;
   description?: unknown;
   variant?: unknown;
+  website?: unknown;
 };
 
 function str(value: unknown, max: number): string {
   return typeof value === "string" ? value.slice(0, max).trim() : "";
+}
+
+// Who sent it. Vercel's runtime logs expire within the hour on this plan,
+// so these details ride along in the notification email, which is kept.
+function senderDetails(request: Request): string[] {
+  const h = request.headers;
+  const decode = (v: string | null) => {
+    if (!v) return "";
+    try {
+      return decodeURIComponent(v);
+    } catch {
+      return v;
+    }
+  };
+  const ip =
+    h.get("x-real-ip") ??
+    h.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    "unknown";
+  const place = [
+    decode(h.get("x-vercel-ip-city")),
+    h.get("x-vercel-ip-country-region") ?? "",
+    h.get("x-vercel-ip-country") ?? "",
+  ]
+    .filter(Boolean)
+    .join(", ");
+  return [
+    "--- Sender details ---",
+    `Received: ${new Date().toISOString()}`,
+    `IP: ${ip}`,
+    `Approx. location: ${place || "unknown"}`,
+    `Device/browser: ${h.get("user-agent") ?? "unknown"}`,
+    `Sent from page: ${h.get("referer") ?? "unknown"}`,
+    `Origin: ${h.get("origin") ?? "none (not sent from a browser page)"}`,
+  ];
 }
 
 export async function POST(request: Request) {
@@ -38,6 +73,13 @@ export async function POST(request: Request) {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid body" }, { status: 400 });
+  }
+
+  // Hidden trap field: people never see it, bots fill it. Answer as if it
+  // worked so the bot moves on, but send nothing.
+  if (str(body.website, MAX_FIELD)) {
+    console.log("contact: trap field filled, dropped", senderDetails(request).join(" | "));
+    return NextResponse.json({ ok: true });
   }
 
   const name = str(body.name, MAX_FIELD);
@@ -62,6 +104,8 @@ export async function POST(request: Request) {
     "",
     "Description:",
     description || "(none provided)",
+    "",
+    ...senderDetails(request),
   ]
     .filter((line) => line !== null)
     .join("\n");

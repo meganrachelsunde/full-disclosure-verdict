@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
 };
 
-const UPDATED = "July 26, 2026";
+const UPDATED = "November 25, 2026";
 
 function Section({
   heading,
@@ -126,7 +126,9 @@ export default function Terms() {
           The intake form is for contact details and a general description
           only. Do not send protected health information, privileged
           material, or identifying case details through it. Record transmittal
-          is arranged separately once an engagement is confirmed.
+          is arranged separately once an engagement is confirmed. Each form
+          submission also records the sender&apos;s IP address, approximate
+          location, and browser, to screen out spam.
         </p>
       </Section>
 
